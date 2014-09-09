@@ -139,6 +139,11 @@
 		<servlet-class>edu.stanford.bmir.protege.web.server.filesubmission.FileUploadServlet</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>DBPediaServiceImpl</servlet-name>
+		<servlet-class>fu.berlin.csw.server.DBPediaApp.DBPediaServiceImpl</servlet-class>
+	</servlet>
+
 	<!-- Servlet mappings -->
 
 	<servlet-mapping>
@@ -250,6 +255,11 @@
 	<servlet-mapping>
 		<servlet-name>SharingSettingsService</servlet-name>
 		<url-pattern>/webprotege/sharingsettings</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DBPediaServiceImpl</servlet-name>
+		<url-pattern>/webprotege/dbpedia</url-pattern>
 	</servlet-mapping>
 
 

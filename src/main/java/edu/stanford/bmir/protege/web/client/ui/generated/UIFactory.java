@@ -1,6 +1,7 @@
 package edu.stanford.bmir.protege.web.client.ui.generated;
 
 import com.google.gwt.core.client.GWT;
+
 import edu.stanford.bmir.protege.web.client.metrics.MetricsPortlet;
 import edu.stanford.bmir.protege.web.client.project.Project;
 import edu.stanford.bmir.protege.web.client.renderer.EntityDescriptionPortlet;
@@ -36,6 +37,7 @@ import edu.stanford.bmir.protege.web.client.ui.projectfeed.ProjectFeedPortlet;
 import edu.stanford.bmir.protege.web.client.ui.tab.AbstractTab;
 import edu.stanford.bmir.protege.web.client.ui.tab.UserDefinedTab;
 import edu.stanford.bmir.protege.web.client.usage.UsagePortlet;
+import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet;
 
 import java.util.*;
 
@@ -192,6 +194,9 @@ public class UIFactory {
             else if(portletJavaClassName.endsWith(OWLEntityDescriptionEditorPortlet.class.getName())) {
                 return new OWLEntityDescriptionEditorPortlet(project);
             }
+            else if(portletJavaClassName.endsWith(DBPediaPortlet.class.getName())) {
+                return new DBPediaPortlet(project);
+            }
         }
         catch (Exception e) {
             GWT.log("Error when creating portlet", e);
@@ -217,7 +222,7 @@ public class UIFactory {
          * ChangeTreePortlet.class.getName(), ChangeSummaryPortlet.class.getName(), ChangeTablePortlet.class.getName(),
          * NotesPortlet.class.getName(),
          */
-        String[] portlets = {OWLEntityDescriptionEditorPortlet.class.getName(), EntityDescriptionPortlet.class.getName(), UsagePortlet.class.getName(), OntologyIdPortlet.class.getName(), OntologyAnnotationsPortlet.class.getName(), EditorPortlet.class.getName(), DiscussionThreadPortlet.class.getName(), ChangeSummaryPortlet.class.getName(), ProjectFeedPortlet.class.getName(), AnnotationsPortlet.class.getName(), AllPropertiesPortlet.class.getName(), PropertiesViewPortlet.class.getName(), ClassTreePortlet.class.getName(), ImportsTreePortlet.class.getName(), IndividualsListPortlet.class.getName(), MetricsPortlet.class.getName(), OntologiesPortlet.class.getName(), PropertiesTreePortlet.class.getName(), BioPortalSearchPortlet.class.getName(), SuperclassesPortlet.class.getName(), ChangesPortlet.class.getName(), WatchedEntitiesPortlet.class.getName(), BioPortalProposalsPortlet.class.getName(), OBOTermCrossProductPortlet.class.getName(), OBOTermRelationshipPortlet.class.getName(), OBOTermSynonymsPortlet.class.getName(), OBOTermMetadataPortlet.class.getName(), OBOTermIdEditorPortlet.class.getName(), OBOTermDefinitionPortlet.class.getName(), OBOTermXRefsEditorPortlet.class.getName(), RevisionsPortlet.class.getName()};
+        String[] portlets = {DBPediaPortlet.class.getName(), OWLEntityDescriptionEditorPortlet.class.getName(), EntityDescriptionPortlet.class.getName(), UsagePortlet.class.getName(), OntologyIdPortlet.class.getName(), OntologyAnnotationsPortlet.class.getName(), EditorPortlet.class.getName(), DiscussionThreadPortlet.class.getName(), ChangeSummaryPortlet.class.getName(), ProjectFeedPortlet.class.getName(), AnnotationsPortlet.class.getName(), AllPropertiesPortlet.class.getName(), PropertiesViewPortlet.class.getName(), ClassTreePortlet.class.getName(), ImportsTreePortlet.class.getName(), IndividualsListPortlet.class.getName(), MetricsPortlet.class.getName(), OntologiesPortlet.class.getName(), PropertiesTreePortlet.class.getName(), BioPortalSearchPortlet.class.getName(), SuperclassesPortlet.class.getName(), ChangesPortlet.class.getName(), WatchedEntitiesPortlet.class.getName(), BioPortalProposalsPortlet.class.getName(), OBOTermCrossProductPortlet.class.getName(), OBOTermRelationshipPortlet.class.getName(), OBOTermSynonymsPortlet.class.getName(), OBOTermMetadataPortlet.class.getName(), OBOTermIdEditorPortlet.class.getName(), OBOTermDefinitionPortlet.class.getName(), OBOTermXRefsEditorPortlet.class.getName(), RevisionsPortlet.class.getName()};
 
         List<String> portletsList = Arrays.asList(portlets);
         Collections.sort(portletsList, new Comparator<String>() {

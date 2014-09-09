@@ -15,6 +15,10 @@
 
     <inherits name='com.google.gwt.junit.JUnit'/>
 
+	<inherits name='fu.berlin.csw.DBPediaApp.client.rpc.DBPediaRPC'/> 
+	<inherits name='fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet'/> 
+	
+
     <inherits name="com.google.gwt.user.User"/>
     <inherits name="com.google.gwt.resources.Resources" />
     <inherits name="com.google.gwt.place.Place"/>
