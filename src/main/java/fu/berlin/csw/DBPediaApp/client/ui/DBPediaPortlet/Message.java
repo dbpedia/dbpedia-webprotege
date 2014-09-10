@@ -2,6 +2,13 @@ package fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet;
 
 import java.io.Serializable;
 
+/**
+ * Author: Lars Parmakerli<br>
+ * Freie Universität Berlin<br>
+ * corporate semantic web<br>
+ * Date: 14/08/2014
+ */
+
 public class Message implements Serializable {
  
    private static final long serialVersionUID = 1L;

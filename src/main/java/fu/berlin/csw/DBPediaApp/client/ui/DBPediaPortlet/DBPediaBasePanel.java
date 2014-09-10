@@ -20,17 +20,18 @@ import fu.berlin.csw.DBPediaApp.client.rpc.DBPediaService;
 import fu.berlin.csw.DBPediaApp.client.rpc.DBPediaServiceAsync;
 
 /**
- * Author: Matthew Horridge<br>
- * Stanford University<br>
- * Bio-Medical Informatics Research Group<br>
- * Date: 26/03/2013
+ * Author: Lars Parmakerli<br>
+ * Freie Universität Berlin<br>
+ * corporate semantic web<br>
+ * Date: 20/08/2014
  */
+
 public class DBPediaBasePanel extends Composite {
 
 	ProjectId projectId;
 
 	AsyncCallback<Message> callbackMessage;
-	AsyncCallback<Void> callbackInit;
+	AsyncCallback<Void> callbackVoid;
 
 	@UiTemplate("DBPediaBasePanel.ui.xml")
 	interface MyUiBinder extends UiBinder<Widget, DBPediaBasePanel> {
@@ -52,7 +53,6 @@ public class DBPediaBasePanel extends Composite {
 
 		this.projectId = projectId;
 
-		
 		proxy = (DBPediaServiceAsync) GWT.create(DBPediaService.class);
 		callbackMessage = new AsyncCallback<Message>() {
 			public void onFailure(Throwable caught) {
@@ -62,30 +62,26 @@ public class DBPediaBasePanel extends Composite {
 			public void onSuccess(Message result) {
 				message = result.getMessage();
 				Window.alert(message);
-				// addSomeContent();
 			}
 		};
-		callbackInit = new AsyncCallback<Void>() {
+		callbackVoid = new AsyncCallback<Void>() {
 			public void onFailure(Throwable caught) {
-				// TODO: Do something with errors.
 			}
 
 			@Override
 			public void onSuccess(Void result) {
-				// Window.alert("Initialisiert!!!  bzw   Change");
 			}
 		};
 
-		proxy.init(projectId, callbackInit);
+		proxy.init(projectId, callbackVoid);
 
 		eventHandlerMan.addProjectEventHandler(ProjectChangedEvent.TYPE,
 				new ProjectChangedHandler() {
 					@Override
 					public void handleProjectChanged(ProjectChangedEvent event) {
 						if (event.getProjectId().equals(projectId)) {
-							//Window.alert("Event: " + (new Integer(this.hashCode())).toString() + event.getRevisionSummary());
 							proxy.postChangeEvent(projectId, event,
-								callbackInit); // Another callback
+									callbackVoid);
 						}
 					}
 				});

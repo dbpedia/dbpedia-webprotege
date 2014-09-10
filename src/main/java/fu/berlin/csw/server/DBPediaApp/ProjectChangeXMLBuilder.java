@@ -33,9 +33,14 @@ import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.revision.RevisionNumber;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
 
-public class ProjectChangeXMLBuilder {
+/**
+ * Author: Lars Parmakerli<br>
+ * Freie Universität Berlin<br>
+ * corporate semantic web<br>
+ * Date: 28/08/2014
+ */
 
-	private static final long serialVersionUID = 1L;
+public class ProjectChangeXMLBuilder {
 
 	private ProjectId projectId;
 	private OWLAPIProject project;
@@ -67,8 +72,8 @@ public class ProjectChangeXMLBuilder {
 	public void setRevisionNumber(RevisionNumber lastRevisionNumber) {
 		this.lastRevisionNumber = lastRevisionNumber;
 	}
-	
-	public int getChangeCount(){
+
+	public int getChangeCount() {
 		return currentChangedEntities.size();
 	}
 
@@ -76,7 +81,8 @@ public class ProjectChangeXMLBuilder {
 
 		for (OWLEntityData entityData : entities) {
 			if (entities.contains(entityData))
-			currentChangedEntities.add(new DBPediaChangeData(entityData, user));
+				currentChangedEntities.add(new DBPediaChangeData(entityData,
+						user));
 		}
 
 	}
@@ -99,7 +105,8 @@ public class ProjectChangeXMLBuilder {
 		}
 	}
 
-	public void buildXML(UserId currentUser) throws ParserConfigurationException {
+	public void buildXML(UserId currentUser)
+			throws ParserConfigurationException {
 
 		docFactory = DocumentBuilderFactory.newInstance();
 
@@ -110,13 +117,15 @@ public class ProjectChangeXMLBuilder {
 		Element rootElement = doc.createElement("ontology_change");
 		doc.appendChild(rootElement);
 
+		Set<DBPediaChangeData> dispatchedChanges = new HashSet<DBPediaChangeData>();
+
 		for (DBPediaChangeData changeData : currentChangedEntities) {
-			
-			if (!(currentUser.equals(changeData.getUser()))){
+
+			if (!(currentUser.equals(changeData.getUser()))) {
 				continue;
 			}
-		
-			// messageString += "\nENTITY: " + entityData.toString() ;
+
+			dispatchedChanges.add(changeData);
 
 			OWLEntity entity = changeData.getEntityData().getEntity();
 
@@ -142,8 +151,7 @@ public class ProjectChangeXMLBuilder {
 
 			rootElement.appendChild(entElem);
 
-			// ##########################ADD
-			// ANNOTATIONS##################################
+			// #############ADD ANNOTATIONS#############
 
 			Set<OWLAnnotation> annots = entity.getAnnotations(project
 					.getRootOntology());
@@ -175,8 +183,7 @@ public class ProjectChangeXMLBuilder {
 				}
 			}
 
-			// #########################ADD OBJECTPROPERTY
-			// STUFF##############################
+			// #############ADD OBJECT PROPERTY STUFF#############
 
 			if (entity.isOWLObjectProperty()) {
 
@@ -258,8 +265,7 @@ public class ProjectChangeXMLBuilder {
 
 				}
 
-				// ##############################ADD DATAPROPERTY
-				// STUFF######################################
+				// #############ADD DATAPROPERTY STUFF#############
 
 			} else if (entity.isOWLDataProperty()) {
 
@@ -341,8 +347,7 @@ public class ProjectChangeXMLBuilder {
 
 				}
 
-				// #####################ADD CLASS
-				// STUFF##############################
+				// #############ADD CLASS STUFF#############
 
 			} else if (entity.isOWLClass()) {
 
@@ -364,31 +369,6 @@ public class ProjectChangeXMLBuilder {
 					}
 
 				}
-
-				/*    DOESN'T WORK 
-				
-				// ADD EQUIVALENTCLASSES
-
-				Set<OWLClassExpression> equivClasses = ((OWLClass) entity)
-						.getEquivalentClasses(project.getRootOntology());
-
-				if (!equivClasses.isEmpty()) {
-
-					Element equivClassesElem = doc
-							.createElement("equivalent_classes");
-					entElem.appendChild(equivClassesElem);
-
-					for (OWLClassExpression OWLclass : equivClasses) {
-						Element equivClassElem = doc
-								.createElement("equivalent_class");
-						// equivClassElem.setTextContent(OWLclass.asOWLClass()
-						// .getIRI().toString());
-						// equivClassesElem.appendChild(equivClassElem);
-					}
-
-				}
-				
-				*/
 
 				// ADD DISJONTCLASSES
 
@@ -412,16 +392,39 @@ public class ProjectChangeXMLBuilder {
 
 				}
 
-			}
-			
-			//currentChangedEntities.remove(changeData);
+				/*
+				 * BUG: throws Excecption in <OWLclass.asOWLClass()>
+				 * 
+				 * // ADD EQUIVALENTCLASSES
+				 * 
+				 * Set<OWLClassExpression> equivClasses = ((OWLClass) entity)
+				 * .getEquivalentClasses(project.getRootOntology());
+				 * 
+				 * if (!equivClasses.isEmpty()) {
+				 * 
+				 * Element equivClassesElem = doc
+				 * .createElement("equivalent_classes");
+				 * entElem.appendChild(equivClassesElem);
+				 * 
+				 * for (OWLClassExpression OWLclass : equivClasses) { Element
+				 * equivClassElem = doc .createElement("equivalent_class");
+				 * equivClassElem.setTextContent(OWLclass.asOWLClass()
+				 * .getIRI().toString());
+				 * equivClassesElem.appendChild(equivClassElem); }
+				 * 
+				 * }
+				 */
 
+			}
 		}
+
+		currentChangedEntities.removeAll(dispatchedChanges);
+
 	}
 
-	public String getXMLasString(UserId currentUser) throws ParserConfigurationException {
+	public String getXMLasString(UserId currentUser)
+			throws ParserConfigurationException {
 		buildXML(currentUser);
-		currentChangedEntities.clear();
 		return toString(doc);
 	}
 

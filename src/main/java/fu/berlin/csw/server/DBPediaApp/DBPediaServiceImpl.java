@@ -10,6 +10,13 @@ import edu.stanford.bmir.protege.web.shared.user.UserId;
 import fu.berlin.csw.DBPediaApp.client.rpc.DBPediaService;
 import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.Message;
 
+/**
+ * Author: Lars Parmakerli<br>
+ * Freie Universität Berlin<br>
+ * corporate semantic web<br>
+ * Date: 21/08/2014
+ */
+
 public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 		implements DBPediaService {
 
@@ -21,11 +28,8 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 	private Set<ProjectChangeXMLBuilder> projectChangeXMLBuilders;
 	private Message message;
 
-	private String messageString;
-
 	public DBPediaServiceImpl() {
 		projectChangeXMLBuilders = new HashSet<ProjectChangeXMLBuilder>();
-		messageString = "";
 
 	}
 
@@ -40,14 +44,14 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 			for (ProjectChangeXMLBuilder builder : projectChangeXMLBuilders) {
 				if (projectId.equals(builder.getProjectId())) {
 					int changeCount = builder.getChangeCount();
-					
+
 					message.setMessage(builder.getXMLasString(currentUser)
 							+ "\n\nUser: "
-							+ this.getUserInSession().getUserName() + " ChangeCount: " + changeCount );
+							+ this.getUserInSession().getUserName()
+							+ " ChangeCount: " + changeCount);
 				}
 			}
 
-			messageString = "";
 			return message;
 
 		} catch (Exception e) {
@@ -83,9 +87,6 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 				}
 				builder.setRevisionNumber(event.getRevisionNumber());
 
-				// DEBUG messageString += "\n\naddChange " +
-				// event.getRevisionSummary()
-				// + " to Project " + projectId;
 				builder.addChange(event.getSubjects(), event.getUserId());
 				return;
 			}
