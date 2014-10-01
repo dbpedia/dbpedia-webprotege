@@ -7,7 +7,9 @@ import com.gwtext.client.widgets.MessageBox;
 import edu.stanford.bmir.protege.web.client.Application;
 import edu.stanford.bmir.protege.web.client.rpc.AbstractAsyncHandler;
 import edu.stanford.bmir.protege.web.client.rpc.AdminServiceManager;
+import edu.stanford.bmir.protege.web.client.rpc.MediawikiServiceManager;
 import edu.stanford.bmir.protege.web.client.ui.login.LoginUtil;
+import edu.stanford.bmir.protege.web.client.ui.login.MediaWikiLogin;
 import edu.stanford.bmir.protege.web.client.ui.login.constants.AuthenticationConstants;
 import edu.stanford.bmir.protege.web.shared.app.WebProtegePropertyName;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
@@ -29,7 +31,7 @@ public class SignInRequestHandlerImpl implements SignInRequestHandler {
 
             @Override
             public void onSuccess() {
-                final LoginUtil loginUtil = new LoginUtil();
+                final MediaWikiLogin loginUtil = new MediaWikiLogin();
                 UserId userId = Application.get().getUserId();
                 if (userId.isGuest()) {
                     Boolean isLoginWithHttps = Application.get().getClientApplicationProperty(WebProtegePropertyName.HTTPS_ENABLED, false);
@@ -40,7 +42,7 @@ public class SignInRequestHandlerImpl implements SignInRequestHandler {
                         authenUrl = authenUrl + "&" + AuthenticationConstants.DOMAIN_NAME_AND_PORT + "=" + com.google.gwt.user.client.Window.Location.getHost();
                         int randomNumber = Random.nextInt(10000);
                         authenUrl = authenUrl + "&" + AuthenticationConstants.RANDOM_NUMBER + "=" + randomNumber;
-                        AdminServiceManager.getInstance().clearPreviousLoginAuthenticationData(new ClearLoginAuthDataHandler(authenUrl, loginUtil, randomNumber));
+                        MediawikiServiceManager.getInstance().clearPreviousLoginAuthenticationData(new ClearLoginAuthDataHandler(authenUrl, loginUtil, randomNumber));
                     }
                     else {
                         loginUtil.login(isLoginWithHttps);
@@ -58,11 +60,11 @@ public class SignInRequestHandlerImpl implements SignInRequestHandler {
 
         private final String athnUrl;
 
-        private final LoginUtil loginUtil;
+        private final MediaWikiLogin loginUtil;
 
         private final int randomNumber;
 
-        public ClearLoginAuthDataHandler(String athnUrl, LoginUtil loginUtil, int randomNumber) {
+        public ClearLoginAuthDataHandler(String athnUrl, MediaWikiLogin loginUtil, int randomNumber) {
             this.athnUrl = athnUrl;
             this.loginUtil = loginUtil;
             this.randomNumber = randomNumber;

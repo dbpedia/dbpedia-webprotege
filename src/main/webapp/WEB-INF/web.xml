@@ -19,7 +19,7 @@
 
 
 	<!-- Listener for initializing and disposing WebProtege -->
-	
+
 	<listener>
 		<listener-class>edu.stanford.bmir.protege.web.server.WebProtegeInitializer</listener-class>
 	</listener>
@@ -41,6 +41,11 @@
 		<servlet-name>AdminServiceImpl</servlet-name>
 		<servlet-class>edu.stanford.bmir.protege.web.server.AdminServiceImpl</servlet-class>
 	</servlet>
+
+    <servlet>
+        <servlet-name>MediawikiServiceImpl</servlet-name>
+        <servlet-class>edu.stanford.bmir.protege.web.server.MediawikiServiceImpl</servlet-class>
+    </servlet>
 
 	<servlet>
 		<servlet-name>NotificationServiceImpl</servlet-name>
@@ -181,6 +186,11 @@
 		<url-pattern>/webprotege/admin</url-pattern>
 	</servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>MediawikiServiceImpl</servlet-name>
+        <url-pattern>/webprotege/mediawiki</url-pattern>
+    </servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>OpenIdServiceImpl</servlet-name>
 		<url-pattern>/webprotege/openid</url-pattern>
@@ -254,14 +264,14 @@
 
 
 	<!-- Default page to serve -->
-	
+
 	<welcome-file-list>
 		<welcome-file>WebProtege.html</welcome-file>
 	</welcome-file-list>
 
 
 	<!-- Error pages -->
-	
+
 	<error-page>
 		<exception-type>edu.stanford.bmir.protege.web.server.init.WebProtegeConfigurationException</exception-type>
 		<location>/configuration-error.jsp</location>
@@ -269,7 +279,7 @@
 
 
 	<!-- Security constraints -->
-	
+
 	<security-constraint>
 		<display-name>excluded</display-name>
 		<web-resource-collection>
