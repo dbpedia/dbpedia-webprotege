@@ -44,6 +44,10 @@ import java.util.logging.Logger;
  */
 public class MediaWikiLogin  extends LoginUtil {
     private static final Logger log = Logger.getLogger(MediaWikiLogin.class.getName());
+
+//    private static final String wiki_host = "http://localhost/mediawiki";
+    private static final String wiki_host = "http://160.45.114.250/mediawiki";
+
     private class MediaWikiData {
         public String cookie_prefix;
         public String session_id;
@@ -202,7 +206,7 @@ public class MediaWikiLogin  extends LoginUtil {
     }
 
     public void api_login(final String user, final String pass, final Callback<MediaWikiData, String> callback) {
-        String url = "http://localhost/mediawiki/api.php?action=login&lgname=" + user + "&lgpassword=" + pass + "&format=json";
+        String url = wiki_host + "/api.php?action=login&lgname=" + user + "&lgpassword=" + pass + "&format=json";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, URL.encode(url));
         builder.setIncludeCredentials(true);
 
@@ -242,7 +246,7 @@ public class MediaWikiLogin  extends LoginUtil {
     }
 
     public void confirm_login(final String user, String pass, String token, final String cookie_prefix, final String session_id, final Callback<MediaWikiData, String> callback) {
-        String url = "http://localhost/mediawiki/api.php?action=login&lgname="
+        String url = wiki_host + "/api.php?action=login&lgname="
                 + user
                 + "&lgpassword="
                 + pass
@@ -293,7 +297,7 @@ public class MediaWikiLogin  extends LoginUtil {
     }
 
     public void get_edit_token(final String user, final String cookie_prefix, final String session_id, final Callback<MediaWikiData, String> callback) {
-        String url = "http://localhost/mediawiki/api.php?" +
+        String url = wiki_host + "/api.php?" +
                 "action=query" +
                 "&prop=info" +
                 "&intoken=edit" +
