@@ -34,12 +34,13 @@ public class DBPediaChangeData {
 			return false;
 		}
 		DBPediaChangeData changeData = (DBPediaChangeData) obj;
-		return (this.entity.equals(changeData.entity));
+		return (this.entity.getEntity().getIRI().equals(changeData.entity.getEntity().getIRI()));
 	}
 
 	@Override
 	public int hashCode() {
-		return entity.hashCode();
+		return entity.getEntity().getIRI().hashCode();
+		//return entity.hashCode();
 	}
 
 }

@@ -5,4 +5,27 @@
 
 	<source path="" />
 
+	<inherits name='com.google.gwt.junit.JUnit' />
+
+
+
+	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.resources.Resources" />
+	<inherits name="com.google.gwt.place.Place" />
+	<inherits name="com.google.common.cache.Cache" />
+	<inherits name="com.google.common.collect.Collect" />
+	<inherits name="com.google.common.base.Base" />
+	<inherits name="com.google.gwt.http.HTTP" />
+	<inherits name="com.google.gwt.json.JSON" />
+	<inherits name="com.google.gwt.inject.Inject" />
+	<inherits name="edu.stanford.bmir.gwtcodemirror.GWTCodeMirrorModule" />
+
+	<inherits name='com.googlecode.gwt.crypto.Crypto' />
+
+	<inherits name="org.semanticweb.owlapi.gwt.owlapi" />
+
+
+
+	<inherits name='com.gwtext.GwtExt' />
+
 </module>
