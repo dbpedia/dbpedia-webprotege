@@ -4,7 +4,7 @@ import com.google.gwt.core.client.GWT;
 
 import edu.stanford.bmir.protege.web.client.metrics.MetricsPortlet;
 import edu.stanford.bmir.protege.web.client.project.Project;
-import edu.stanford.bmir.protege.web.client.renderer.EntityDescriptionPortlet;
+import edu.stanford.bmir.protege.web.client.renderer.OWLEntityDescriptionBrowserPortlet;
 import edu.stanford.bmir.protege.web.client.ui.editor.EditorPortlet;
 import edu.stanford.bmir.protege.web.client.ui.frame.OWLEntityDescriptionEditorPortlet;
 import edu.stanford.bmir.protege.web.client.ui.notes.DiscussionThreadPortlet;
@@ -188,8 +188,8 @@ public class UIFactory {
             else if(portletJavaClassName.equals(UsagePortlet.class.getName())) {
                 return new UsagePortlet(project);
             }
-            else if(portletJavaClassName.equals(EntityDescriptionPortlet.class.getName())) {
-                return new EntityDescriptionPortlet(project);
+            else if(portletJavaClassName.equals(OWLEntityDescriptionBrowserPortlet.class.getName())) {
+                return new OWLEntityDescriptionBrowserPortlet(project);
             }
             else if(portletJavaClassName.endsWith(OWLEntityDescriptionEditorPortlet.class.getName())) {
                 return new OWLEntityDescriptionEditorPortlet(project);
