@@ -89,7 +89,6 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 					
 					String messageString = "";
 
-					/*
 					
 					// send XML via http post
 
@@ -134,12 +133,12 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 						messageString += ("\nChunked?: " + resEntity
 								.isChunked());
 					}
-					*/
+					
 
-					message.setMessage("Raw XML: " + builder.getXMLasString(currentUserId, currentUser));
-						//	+ "\n\nRAW RESPONSE CONTENT: "
-						//	+ sb.toString()
-						//	+ "\n\nRAW REQUEST: ");
+					message.setMessage(messageString //"Raw XML: " + builder.getXMLasString(currentUserId, currentUser));
+							+ "\n\nRAW RESPONSE CONTENT: "
+							+ sb.toString()
+							+ "\n\nRAW REQUEST: ");
 						//	+ rawRequest);
 
 					//EntityUtils.consume(resEntity);
