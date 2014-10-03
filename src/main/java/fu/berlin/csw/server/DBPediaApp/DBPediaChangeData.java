@@ -34,12 +34,14 @@ public class DBPediaChangeData {
 			return false;
 		}
 		DBPediaChangeData changeData = (DBPediaChangeData) obj;
-		return (this.entity.getEntity().getIRI().equals(changeData.entity.getEntity().getIRI()));
+        String this_str = this.entity.getEntity().getIRI().toString() + this.entity.getType().name();
+        String other_str = changeData.entity.getEntity().getIRI().toString() + changeData.entity.getType().name();
+		return this_str.equals(other_str);
 	}
 
 	@Override
 	public int hashCode() {
-		return entity.getEntity().getIRI().hashCode();
+		return entity.getEntity().getIRI().hashCode() + entity.getType().hashCode();
 		//return entity.hashCode();
 	}
 
