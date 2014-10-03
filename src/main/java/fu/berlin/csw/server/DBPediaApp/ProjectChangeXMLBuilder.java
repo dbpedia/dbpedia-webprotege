@@ -53,7 +53,7 @@ import edu.stanford.smi.protege.server.metaproject.User;
 public class ProjectChangeXMLBuilder {
 
 	private ProjectId projectId;
-	private OWLAPIProject project;
+//	private OWLAPIProject project;
 	private Set<DBPediaChangeData> currentChangedEntities;
 
 	private DocumentBuilderFactory docFactory;
@@ -65,8 +65,7 @@ public class ProjectChangeXMLBuilder {
 
 	public ProjectChangeXMLBuilder(ProjectId projectId) {
 		this.projectId = projectId;
-		this.project = OWLAPIProjectManager.getProjectManager().getProject(
-				projectId);
+//		this.project = OWLAPIProjectManager.getProjectManager().getProject( projectId);
 		this.currentChangedEntities = Collections
 				.synchronizedSet(new HashSet<DBPediaChangeData>());
 
@@ -118,6 +117,8 @@ public class ProjectChangeXMLBuilder {
 
 	public void buildXML(UserId currentUserId, User currentUser)
 			throws ParserConfigurationException {
+
+		OWLAPIProject project = OWLAPIProjectManager.getProjectManager().getProject( projectId);
 
 		docFactory = DocumentBuilderFactory.newInstance();
 
@@ -417,25 +418,25 @@ public class ProjectChangeXMLBuilder {
 
 					/*
 					 * BUG: throws Excecption in <OWLclass.asOWLClass()>
-					 * 
+					 *
 					 * // ADD EQUIVALENTCLASSES
-					 * 
+					 *
 					 * Set<OWLClassExpression> equivClasses = ((OWLClass)
 					 * entity) .getEquivalentClasses(project.getRootOntology());
-					 * 
+					 *
 					 * if (!equivClasses.isEmpty()) {
-					 * 
+					 *
 					 * Element equivClassesElem = doc
 					 * .createElement("equivalent_classes");
 					 * entElem.appendChild(equivClassesElem);
-					 * 
+					 *
 					 * for (OWLClassExpression OWLclass : equivClasses) {
 					 * Element equivClassElem = doc
 					 * .createElement("equivalent_class");
 					 * equivClassElem.setTextContent(OWLclass.asOWLClass()
 					 * .getIRI().toString());
 					 * equivClassesElem.appendChild(equivClassElem); }
-					 * 
+					 *
 					 * }
 					 */
 
