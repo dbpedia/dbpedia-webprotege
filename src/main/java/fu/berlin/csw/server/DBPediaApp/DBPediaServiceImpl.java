@@ -58,6 +58,9 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 	 */
 	private static final long serialVersionUID = 1L;
 
+    private static final String REST_URI  = "160.45.114.250";
+    private static final String REST_HOST = "http://160.45.114.250:8080/dpw/webprotege";
+
 	private Set<ProjectChangeXMLBuilder> projectChangeXMLBuilders;
 	private Message message;
 
@@ -88,15 +91,15 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
 			HttpClient client = new DefaultHttpClient();
 
-			HttpPost post = new HttpPost("http://localhost:8080/dpw/webprotege");
+			HttpPost post = new HttpPost(REST_HOST);
             HttpClientContext context = HttpClientContext.create();
 
             BasicClientCookie token_cookie = new BasicClientCookie("token", token);
-            token_cookie.setDomain("localhost");
+            token_cookie.setDomain(REST_URI);
             BasicClientCookie session_name_cookie = new BasicClientCookie("session_name", session_name);
-            session_name_cookie.setDomain("localhost");
+            session_name_cookie.setDomain(REST_URI);
             BasicClientCookie session_id_cookie = new BasicClientCookie("session_id", session_id);
-            session_id_cookie.setDomain("localhost");
+            session_id_cookie.setDomain(REST_URI);
             CookieStore cookieStore = new BasicCookieStore();
 
             cookieStore.addCookie(token_cookie);
