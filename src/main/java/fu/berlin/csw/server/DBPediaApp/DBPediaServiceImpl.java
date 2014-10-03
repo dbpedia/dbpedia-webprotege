@@ -18,6 +18,7 @@ import javax.xml.transform.dom.DOMSource;
 
 import edu.stanford.bmir.protege.web.server.logging.DefaultLogger;
 import edu.stanford.bmir.protege.web.server.logging.WebProtegeLogger;
+import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -76,15 +77,10 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 			User currentUser = metaProject.getUser(currentUserId.getUserName());
 
             String userName =  currentUser.getName();
-            String token = currentUser.getPropertyValue(userName + "_token");
 
+            String token = currentUser.getPropertyValue(userName + "_token");
             String session_name = currentUser.getPropertyValue(userName + "_session_prefix");
             String session_id = currentUser.getPropertyValue(userName + "_session_cookie");
-
-            logger.info("Token: " + token);
-            logger.info("Session cookie: " +session_id);
-            logger.info("Session prefix: " + session_name);
-//			currentUser.setPropertyValue("token", "test_token");
 
 			/* SERVER STUFF */
 
@@ -214,7 +210,24 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 				}
 				builder.setRevisionNumber(event.getRevisionNumber());
 
-				builder.addChange(event.getSubjects(), event.getUserId());
+                Set<OWLEntityData> data = new HashSet<OWLEntityData>();
+
+                for(OWLEntityData ent: event.getSubjects()) {
+                    String type = ent.getType().name();
+                    logger.info(type);
+
+                    if(type.equals("CLASS")) {
+                        data.add(ent);
+                    } else if(type.equals("OBJECT_PROPERTY")) {
+                        data.add(ent);
+                    } else if(type.equals("DATA_PROPERTY")) {
+                        data.add(ent);
+                    }
+                }
+
+                builder.addChange(data, event.getUserId());
+
+
 				return;
 			}
 		}
