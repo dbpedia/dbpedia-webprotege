@@ -17,7 +17,7 @@ import edu.stanford.bmir.protege.web.client.ui.portlet.AbstractOWLEntityPortlet;
  */
 @SuppressWarnings("unchecked")
 public class DBPediaPortlet extends AbstractOWLEntityPortlet {
-	
+
     private DBPediaBasePanel basePanel;
 
     public DBPediaPortlet(Project project) {
@@ -35,10 +35,10 @@ public class DBPediaPortlet extends AbstractOWLEntityPortlet {
     @Override
     public void initialize() {
         basePanel = new DBPediaBasePanel(getProjectId(), this);
-        setTitle("DBPedia");
-        setSize(300, 180);
+        setTitle("DBpedia");
+        setSize(300, 68);
         add(basePanel);
-        
+
     }
 
     @Override
@@ -50,6 +50,6 @@ public class DBPediaPortlet extends AbstractOWLEntityPortlet {
     public Collection<EntityData> getSelection() {
         return Collections.emptySet();
     }
-    
- 
+
+
 }
