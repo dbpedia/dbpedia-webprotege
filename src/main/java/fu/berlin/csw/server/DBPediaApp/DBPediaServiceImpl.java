@@ -16,13 +16,19 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
 
+import edu.stanford.bmir.protege.web.server.logging.DefaultLogger;
+import edu.stanford.bmir.protege.web.server.logging.WebProtegeLogger;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 
 import edu.stanford.bmir.protege.web.server.MetaProjectManager;
@@ -45,8 +51,9 @@ import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.Message;
 public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 		implements DBPediaService {
 
+    private WebProtegeLogger logger = new DefaultLogger(DBPediaServiceImpl.class);
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -68,7 +75,16 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 			MetaProject metaProject = mpm.getMetaProject();
 			User currentUser = metaProject.getUser(currentUserId.getUserName());
 
-			currentUser.setPropertyValue("token", "test_token");
+            String userName =  currentUser.getName();
+            String token = currentUser.getPropertyValue(userName + "_token");
+
+            String session_name = currentUser.getPropertyValue(userName + "_session_prefix");
+            String session_id = currentUser.getPropertyValue(userName + "_session_cookie");
+
+            logger.info("Token: " + token);
+            logger.info("Session cookie: " +session_id);
+            logger.info("Session prefix: " + session_name);
+//			currentUser.setPropertyValue("token", "test_token");
 
 			/* SERVER STUFF */
 
@@ -77,6 +93,22 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 			HttpClient client = new DefaultHttpClient();
 
 			HttpPost post = new HttpPost("http://localhost:8080/dpw/webprotege");
+            HttpClientContext context = HttpClientContext.create();
+
+            BasicClientCookie token_cookie = new BasicClientCookie("token", token);
+            token_cookie.setDomain("localhost");
+            BasicClientCookie session_name_cookie = new BasicClientCookie("session_name", session_name);
+            session_name_cookie.setDomain("localhost");
+            BasicClientCookie session_id_cookie = new BasicClientCookie("session_id", session_id);
+            session_id_cookie.setDomain("localhost");
+            CookieStore cookieStore = new BasicCookieStore();
+
+            cookieStore.addCookie(token_cookie);
+            cookieStore.addCookie(session_id_cookie);
+            cookieStore.addCookie(session_name_cookie);
+
+            context.setCookieStore(cookieStore);
+
 
 			/* SERVER STUFF */
 
@@ -86,29 +118,30 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 				if (projectId.equals(builder.getProjectId())) {
 					int changeCount = builder.getChangeCount();
 
-					
+
 					String messageString = "";
 
-					
+
 					// send XML via http post
 
 					InputStream is = builder.getXMLInputStream(currentUserId,
 							currentUser);
-					
+
 					InputStreamEntity reqEntity = new InputStreamEntity(is);
 					reqEntity.setContentType("application/xml");
 					reqEntity.setChunked(false);
+
 
 					post.setEntity(reqEntity);
 
 					messageString += "Executing request "
 							+ post.getRequestLine();
-					HttpResponse response = client.execute(post);
+					HttpResponse response = client.execute(post, context);
 					HttpEntity resEntity = response.getEntity();
 
-					
+
 					// Read Response from Server
-					
+
 					StringBuilder sb = new StringBuilder();
 					BufferedReader reader = new BufferedReader(
 							new InputStreamReader(resEntity.getContent()),
@@ -133,7 +166,7 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 						messageString += ("\nChunked?: " + resEntity
 								.isChunked());
 					}
-					
+
 
 					message.setMessage(messageString //"Raw XML: " + builder.getXMLasString(currentUserId, currentUser));
 							+ "\n\nRAW RESPONSE CONTENT: "
