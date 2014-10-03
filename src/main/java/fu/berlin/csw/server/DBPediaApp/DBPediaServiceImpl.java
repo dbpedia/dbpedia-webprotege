@@ -145,11 +145,13 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 					while ((line = reader.readLine()) != null) {
 						sb.append(line);
 					}
-					
+
 					if (response.getStatusLine().getStatusCode() == 200) {
 						success = true;
 						message.setMessage("commit success");
-					}
+					} else {
+                        message.setMessage("commit failure: " + response.getEntity().getContent());
+                    }
 
 					EntityUtils.consume(resEntity);
 
