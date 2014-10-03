@@ -52,10 +52,7 @@ import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.Message;
 public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 		implements DBPediaService {
 
-    private WebProtegeLogger logger = new DefaultLogger(DBPediaServiceImpl.class);
-	/**
-	 *
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	private Set<ProjectChangeXMLBuilder> projectChangeXMLBuilders;
@@ -130,8 +127,6 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
 					post.setEntity(reqEntity);
 
-					messageString += "Executing request "
-							+ post.getRequestLine();
 					HttpResponse response = client.execute(post, context);
 					HttpEntity resEntity = response.getEntity();
 
@@ -147,30 +142,13 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 					while ((line = reader.readLine()) != null) {
 						sb.append(line);
 					}
-
-					messageString += "\n----------------------------------------";
-					messageString += (response.getStatusLine());
+					
 					if (response.getStatusLine().getStatusCode() == 200) {
 						success = true;
+						message.setMessage("commit success");
 					}
 
-					messageString += "\nSucceed?: " + success;
-
-					if (resEntity != null) {
-						messageString += ("\nResponse content length: " + resEntity
-								.getContentLength());
-						messageString += ("\nChunked?: " + resEntity
-								.isChunked());
-					}
-
-
-					message.setMessage(messageString //"Raw XML: " + builder.getXMLasString(currentUserId, currentUser));
-							+ "\n\nRAW RESPONSE CONTENT: "
-							+ sb.toString()
-							+ "\n\nRAW REQUEST: ");
-						//	+ rawRequest);
-
-					//EntityUtils.consume(resEntity);
+					EntityUtils.consume(resEntity);
 
 				}
 			}
@@ -214,7 +192,6 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
                 for(OWLEntityData ent: event.getSubjects()) {
                     String type = ent.getType().name();
-                    logger.info(type);
 
                     if(type.equals("CLASS")) {
                         data.add(ent);

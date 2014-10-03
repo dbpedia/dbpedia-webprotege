@@ -53,7 +53,7 @@ import edu.stanford.smi.protege.server.metaproject.User;
 public class ProjectChangeXMLBuilder {
 
 	private ProjectId projectId;
-//	private OWLAPIProject project;
+	// private OWLAPIProject project;
 	private Set<DBPediaChangeData> currentChangedEntities;
 
 	private DocumentBuilderFactory docFactory;
@@ -65,7 +65,7 @@ public class ProjectChangeXMLBuilder {
 
 	public ProjectChangeXMLBuilder(ProjectId projectId) {
 		this.projectId = projectId;
-//		this.project = OWLAPIProjectManager.getProjectManager().getProject( projectId);
+
 		this.currentChangedEntities = Collections
 				.synchronizedSet(new HashSet<DBPediaChangeData>());
 
@@ -118,7 +118,8 @@ public class ProjectChangeXMLBuilder {
 	public void buildXML(UserId currentUserId, User currentUser)
 			throws ParserConfigurationException {
 
-		OWLAPIProject project = OWLAPIProjectManager.getProjectManager().getProject( projectId);
+		OWLAPIProject project = OWLAPIProjectManager.getProjectManager()
+				.getProject(projectId);
 
 		docFactory = DocumentBuilderFactory.newInstance();
 
@@ -164,8 +165,6 @@ public class ProjectChangeXMLBuilder {
 				entElem.setAttributeNode(IRIattr);
 				entElem.setAttributeNode(delAddattr);
 				entElem.setAttributeNode(userAttr);
-				// entElem.setAttributeNode(tokenAttr); not yet supported by
-				// Server
 
 				rootElement.appendChild(entElem);
 
@@ -187,11 +186,10 @@ public class ProjectChangeXMLBuilder {
 								.replaceAll(".*\\(", "").replaceAll(" ", "")
 								.replaceAll("\\)", "");
 
-						// TODO: skip useless annotations
-						// if (!
-						// (annotType.matches("(rdfs:label)|(rdfs:comment)@.*"))){
-						// continue;
-						// }
+						if (!annotType // Test
+								.matches("((rdfs:label)|(rdfs:comment))@?.*")) {
+							continue;
+						}
 
 						annAttr.setValue(annotType);
 						annotElem.setAttributeNode(annAttr);
@@ -320,8 +318,7 @@ public class ProjectChangeXMLBuilder {
 
 						for (OWLDataRange range : ranges) {
 							Element rangeElem = doc.createElement("range");
-							rangeElem.setTextContent(range.getDataRangeType()
-									.toString()); // TEST
+							rangeElem.setTextContent(range.toString()); // Test
 							rangesElem.appendChild(rangeElem);
 						}
 
@@ -416,29 +413,31 @@ public class ProjectChangeXMLBuilder {
 
 					}
 
+					// BUG: throws Excecption in <OWLclass.asOWLClass()>
+
+					// ADD EQUIVALENTCLASSES
+
 					/*
-					 * BUG: throws Excecption in <OWLclass.asOWLClass()>
-					 *
-					 * // ADD EQUIVALENTCLASSES
-					 *
-					 * Set<OWLClassExpression> equivClasses = ((OWLClass)
-					 * entity) .getEquivalentClasses(project.getRootOntology());
-					 *
-					 * if (!equivClasses.isEmpty()) {
-					 *
-					 * Element equivClassesElem = doc
-					 * .createElement("equivalent_classes");
-					 * entElem.appendChild(equivClassesElem);
-					 *
-					 * for (OWLClassExpression OWLclass : equivClasses) {
-					 * Element equivClassElem = doc
-					 * .createElement("equivalent_class");
-					 * equivClassElem.setTextContent(OWLclass.asOWLClass()
-					 * .getIRI().toString());
-					 * equivClassesElem.appendChild(equivClassElem); }
-					 *
-					 * }
-					 */
+					Set<OWLClassExpression> equivClasses = ((OWLClass) entity)
+							.getEquivalentClasses(project.getRootOntology());
+
+					if (!equivClasses.isEmpty()) {
+
+						Element equivClassesElem = doc
+								.createElement("equivalent_classes");
+						entElem.appendChild(equivClassesElem);
+
+						for (OWLClassExpression OWLclass : equivClasses) {
+							Element equivClassElem = doc
+									.createElement("equivalent_class");
+							equivClassElem.setTextContent(OWLclass.asOWLClass()
+									.getIRI().toString());
+							equivClassesElem.appendChild(equivClassElem);
+						}
+
+					}
+					
+					*/
 
 				}
 			}
