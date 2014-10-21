@@ -1,5 +1,6 @@
 package edu.stanford.bmir.protege.web.client.ui.ontology.changes;
 
+import com.google.common.base.Optional;
 import com.gwtext.client.data.*;
 import com.gwtext.client.widgets.PagingToolbar;
 import com.gwtext.client.widgets.grid.ColumnConfig;
@@ -52,40 +53,42 @@ public class ChangesPortlet extends AbstractOWLEntityPortlet {
         lastRevisionNumber = event.getRevisionNumber();
         for(OWLEntityData entityData : event.getSubjects()) {
             if(isSelected(entityData.getEntity())) {
-                reload();
+                updateDisplayForSelectedEntity();
                 return;
             }
         }
     }
 
-
     @Override
-	public void reload() {
-		store.removeAll();
+    protected void handleAfterSetEntity(Optional<OWLEntityData> entityData) {
+        updateDisplayForSelectedEntity();
+    }
 
-		String entityName = "";
+    private void updateDisplayForSelectedEntity() {
+        store.removeAll();
 
-		EntityData entity = getEntity();
+        String entityName = "";
 
-		if (entity != null) {
-			entityName = entity.getName();
-			setTitle("Change history for " + UIUtil.getDisplayText(getEntity()));
-		} else {
-			setTitle("Change history (nothing selected)");
-		}
+        EntityData entity = getEntity();
+
+        if (entity != null) {
+            entityName = entity.getName();
+            setTitle("Change history for " + UIUtil.getDisplayText(getEntity()));
+        } else {
+            setTitle("Change history (nothing selected)");
+        }
 
 
         ProjectId projectId = getProjectId();
-		proxy.resetParams();
-		proxy.setProjectId(projectId);
-		proxy.setEntityName(entityName);
+        proxy.resetParams();
+        proxy.setProjectId(projectId);
+        proxy.setEntityName(entityName);
 
-		PagingToolbar pToolbar = (PagingToolbar) changesGrid.getBottomToolbar();
-		store.load(0, pToolbar.getPageSize());
+        PagingToolbar pToolbar = (PagingToolbar) changesGrid.getBottomToolbar();
+        store.load(0, pToolbar.getPageSize());
+    }
 
-	}
-
-	private void createGrid() {
+    private void createGrid() {
 		changesGrid = new GridPanel();
 
 		changesGrid.setAutoWidth(true);

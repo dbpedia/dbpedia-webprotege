@@ -38,14 +38,22 @@
                     <width>0.20</width>
                     <portlets>
                         <portlet>
+                            <name>fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet</name>
+                            <height>66</height>
+                            <width>0</width>
+                            <index>0</index>
+                        </portlet>
+                        <portlet>
                             <name>edu.stanford.bmir.protege.web.client.ui.projectfeed.ProjectFeedPortlet</name>
                             <height>170</height>
                             <width>0</width>
+                            <index>2</index>
                         </portlet>
                         <portlet>
                             <name>edu.stanford.bmir.protege.web.client.ui.notes.DiscussionThreadPortlet</name>
                             <height>390</height>
                             <width>0</width>
+                            <index>1</index>
                         </portlet>
                     </portlets>
                 </column>
@@ -83,6 +91,7 @@
                             <name>edu.stanford.bmir.protege.web.client.ui.editor.EditorPortlet</name>
                             <height>570</height>
                             <width>0</width>
+                            <index>0</index>
                         </portlet>
                     </portlets>
                 </column>
@@ -92,14 +101,22 @@
                     <width>0.20</width>
                     <portlets>
                         <portlet>
+                            <name>fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet</name>
+                            <height>66</height>
+                            <width>0</width>
+                            <index>0</index>
+                        </portlet>
+                        <portlet>
                             <name>edu.stanford.bmir.protege.web.client.ui.projectfeed.ProjectFeedPortlet</name>
                             <height>170</height>
                             <width>0</width>
+                            <index>2</index>
                         </portlet>
                         <portlet>
                             <name>edu.stanford.bmir.protege.web.client.ui.notes.DiscussionThreadPortlet</name>
                             <height>390</height>
                             <width>0</width>
+                            <index>1</index>
                         </portlet>
                     </portlets>
                 </column>

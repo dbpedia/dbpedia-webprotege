@@ -1,6 +1,7 @@
 package edu.stanford.bmir.protege.web.client.ui.frame;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -19,6 +20,7 @@ import edu.stanford.bmir.protege.web.client.rpc.GetRenderingResponse;
 import edu.stanford.bmir.protege.web.client.rpc.RenderingServiceManager;
 import edu.stanford.bmir.protege.web.client.ui.editor.EditorView;
 import edu.stanford.bmir.protege.web.client.ui.editor.ValueEditor;
+import edu.stanford.bmir.protege.web.resources.WebProtegeResourceBundle;
 import edu.stanford.bmir.protege.web.shared.DirtyChangedEvent;
 import edu.stanford.bmir.protege.web.shared.DirtyChangedHandler;
 import edu.stanford.bmir.protege.web.shared.PrimitiveType;
@@ -68,12 +70,13 @@ public class ObjectPropertyFrameEditor extends FlowPanel implements EntityFrameE
     private ProjectId projectId;
 
     public ObjectPropertyFrameEditor(ProjectId projectId) {
+        WebProtegeResourceBundle.INSTANCE.style().ensureInjected();
         this.projectId = projectId;
         annotations = new PropertyValueListEditor(projectId);
         annotations.setGrammar(PropertyValueGridGrammar.getAnnotationsGrammar());
-        domains = new PrimitiveDataListEditor(projectId, PrimitiveType.CLASS);
+        domains = new PrimitiveDataListEditor(PrimitiveType.CLASS);
         domains.setPlaceholder("Enter class name");
-        ranges = new PrimitiveDataListEditor(projectId, PrimitiveType.CLASS);
+        ranges = new PrimitiveDataListEditor(PrimitiveType.CLASS);
         ranges.setPlaceholder("Enter class name");
         HTMLPanel rootElement = ourUiBinder.createAndBindUi(this);
         add(rootElement);
@@ -106,19 +109,14 @@ public class ObjectPropertyFrameEditor extends FlowPanel implements EntityFrameE
     }
 
     @UiHandler("domains")
-    protected void handleDomainsChanged(ValueChangeEvent<Optional<OWLPrimitiveDataList>> event) {
+    protected void handleDomainsChanged(ValueChangeEvent<Optional<List<OWLPrimitiveData>>> event) {
         fireEventIfWellFormed();
     }
 
     @UiHandler("ranges")
-    protected void handleRangesChanged(ValueChangeEvent<Optional<OWLPrimitiveDataList>> event) {
+    protected void handleRangesChanged(ValueChangeEvent<Optional<List<OWLPrimitiveData>>> event) {
         fireEventIfWellFormed();
     }
-
-
-
-
-
 
     /**
      * Returns true if the widget is enabled, false if not.
@@ -173,7 +171,7 @@ public class ObjectPropertyFrameEditor extends FlowPanel implements EntityFrameE
                         primitiveDatas.add(entityData.get());
                     }
                 }
-                domains.setValue(new OWLPrimitiveDataList(primitiveDatas));
+                domains.setValue(primitiveDatas);
             }
         });
         RenderingServiceManager.getManager().execute(new GetRendering(projectId, frame.getRanges()), new AsyncCallback<GetRenderingResponse>() {
@@ -190,7 +188,7 @@ public class ObjectPropertyFrameEditor extends FlowPanel implements EntityFrameE
                         primitiveDatas.add(entityData.get());
                     }
                 }
-                ranges.setValue(new OWLPrimitiveDataList(primitiveDatas));
+                ranges.setValue(primitiveDatas);
             }
         });
         previouslySetValue = Optional.of(object);
@@ -215,8 +213,14 @@ public class ObjectPropertyFrameEditor extends FlowPanel implements EntityFrameE
         annotationValueSet.addAll(annotations.getValue().get().getAnnotationPropertyValues());
         final ObjectPropertyFrame previousFrame = previouslySetValue.get().getFrame();
         OWLObjectProperty subject = previousFrame.getSubject();
-        List<OWLClass> editedDomains = domains.getValue().get().getEntitiesOfType(EntityType.CLASS);
-        List<OWLClass> editedRanges = ranges.getValue().get().getEntitiesOfType(EntityType.CLASS);
+        List<OWLClass> editedDomains = Lists.newArrayList();
+        for(OWLPrimitiveData data : domains.getValue().get()) {
+            editedDomains.add((OWLClass) data.getObject());
+        }
+        List<OWLClass> editedRanges = Lists.newArrayList();
+        for(OWLPrimitiveData data : ranges.getValue().get()) {
+            editedRanges.add((OWLClass) data.getObject());
+        }
         ObjectPropertyFrame frame = new ObjectPropertyFrame(subject, annotationValueSet, new HashSet<OWLClass>(editedDomains), new HashSet<OWLClass>(editedRanges), Collections.<OWLObjectProperty>emptySet());
         return Optional.of(new LabelledFrame<ObjectPropertyFrame>(displayName, frame));
     }

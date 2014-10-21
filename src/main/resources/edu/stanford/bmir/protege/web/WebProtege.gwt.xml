@@ -9,11 +9,11 @@
 
 	<source path="client" />
 	<source path="shared" />
+    <source path="resources"/>
 
 	<inherits name='fu.berlin.csw.DBPediaApp.client.rpc.DBPediaRPC' />
 	<inherits
 		name='fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet' />
-
 
 	<inherits name='com.google.gwt.junit.JUnit' />
 	<!--<inherits name="com.google.gwt.logging.Logging" />-->

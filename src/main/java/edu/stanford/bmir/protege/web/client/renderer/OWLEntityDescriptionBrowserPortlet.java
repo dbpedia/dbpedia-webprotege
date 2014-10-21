@@ -31,23 +31,18 @@ public class OWLEntityDescriptionBrowserPortlet extends AbstractOWLEntityPortlet
         super(project);
     }
 
-    public OWLEntityDescriptionBrowserPortlet(Project project, boolean initialize) {
-        super(project, initialize);
-    }
-
     @Override
-    public void reload() {
-        Optional<OWLEntityData> entity = getSelectedEntityData();
-        if(entity.isPresent()) {
-            DispatchServiceManager.get().execute(new GetEntityRenderingAction(getProjectId(), entity.get().getEntity()),
-                    new AbstractWebProtegeAsyncCallback<GetEntityRenderingResult>() {
-                        @Override
-                        public void onSuccess(GetEntityRenderingResult result) {
-                            html.setHTML(result.getRendering());
-                        }
-                    });
+    protected void handleAfterSetEntity(Optional<OWLEntityData> entityData) {
+        if(entityData.isPresent()) {
+            DispatchServiceManager.get().execute(new GetEntityRenderingAction(getProjectId(), entityData.get().getEntity()),
+                                                 new AbstractWebProtegeAsyncCallback<GetEntityRenderingResult>() {
+                                                     @Override
+                                                     public void onSuccess(GetEntityRenderingResult result) {
+                                                         html.setHTML(result.getRendering());
+                                                     }
+                                                 });
 
-            setTitle(entity.get().getBrowserText());
+            setTitle(entityData.get().getBrowserText());
         }
     }
 
@@ -98,7 +93,7 @@ public class OWLEntityDescriptionBrowserPortlet extends AbstractOWLEntityPortlet
 
     private void handleEntityChange(OWLEntity entity) {
         if(Optional.of(entity).equals(getSelectedEntity())) {
-            reload();
+            handleAfterSetEntity(getSelectedEntityData());
         }
     }
 
