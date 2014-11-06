@@ -51,7 +51,7 @@ public class MediaWikiLogin  extends LoginUtil {
     private class MediaWikiData {
         public String cookie_prefix;
         public String session_id;
-        public String token;
+        public String edit_token;
 
     }
 
@@ -300,7 +300,7 @@ public class MediaWikiLogin  extends LoginUtil {
         String url = wiki_host + "/api.php?" +
                 "action=query" +
                 "&prop=info" +
-                "&intoken=edit" +
+                "&intoken=edit|move" +
                 "&titles=Main Page" +
                 "&format=json";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
@@ -315,9 +315,9 @@ public class MediaWikiLogin  extends LoginUtil {
                     JSONObject json_query = json_obj.get("query").isObject();
                     JSONObject json_pages = json_query.get("pages").isObject();
                     JSONObject json_info = json_pages.get("1").isObject();
-                    String token = json_info.get("edittoken").isString().stringValue();
+                    String edit_token = json_info.get("edittoken").isString().stringValue();
                     MediaWikiData data = new MediaWikiData();
-                    data.token = token;
+                    data.edit_token = edit_token;
                     data.cookie_prefix = cookie_prefix;
                     data.session_id = session_id;
                     callback.onSuccess(data);
@@ -351,7 +351,7 @@ public class MediaWikiLogin  extends LoginUtil {
 
             @Override
             public void onSuccess(MediaWikiData result) {
-                MediawikiServiceManager.getInstance().getUserSaltAndChallenge(userName, new GetSaltAndChallengeForLoginHandler(userName, passField, win, result.token, result.cookie_prefix, result.session_id ));
+                MediawikiServiceManager.getInstance().getUserSaltAndChallenge(userName, new GetSaltAndChallengeForLoginHandler(userName, passField, win, result.edit_token, result.cookie_prefix, result.session_id ));
 
             }
         };
