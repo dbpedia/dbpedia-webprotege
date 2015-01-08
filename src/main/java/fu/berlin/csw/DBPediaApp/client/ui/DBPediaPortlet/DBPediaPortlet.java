@@ -28,9 +28,9 @@ public class DBPediaPortlet extends AbstractOWLEntityPortlet {
         super(project, initialize);
     }
 
-    @Override
-    public void reload() {
-    }
+//    @Override
+//    public void reload() {
+//    }
 
     @Override
     public void initialize() {
