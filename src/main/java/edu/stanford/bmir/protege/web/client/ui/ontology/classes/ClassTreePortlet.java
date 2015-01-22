@@ -50,6 +50,7 @@ import edu.stanford.bmir.protege.web.client.ui.upload.UploadFileDialogController
 import edu.stanford.bmir.protege.web.client.ui.upload.UploadFileResultHandler;
 import edu.stanford.bmir.protege.web.client.ui.util.GlobalSelectionManager;
 import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
+import edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle;
 import edu.stanford.bmir.protege.web.shared.DataFactory;
 import edu.stanford.bmir.protege.web.shared.ObjectPath;
 import edu.stanford.bmir.protege.web.shared.csv.CSVImportDescriptor;
@@ -64,6 +65,8 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 import java.util.*;
+
+import static edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle.BUNDLE;
 
 /**
  * Portlet for displaying class trees. It can be configured to show only a
@@ -301,6 +304,8 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
 
     @Override
     public void initialize() {
+        BUNDLE.style().ensureInjected();
+
         setLayout(new FitLayout());
 
         setTools(getTools());
@@ -362,7 +367,6 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
 
                     MenuItem menuShowDirectLink = new MenuItem();
                     menuShowDirectLink.setText("Show direct link");
-                    menuShowDirectLink.setIcon("images/link.png");
                     menuShowDirectLink.addListener(new BaseItemListenerAdapter() {
                         @Override
                         public void onClick(BaseItem item, EventObject event) {
@@ -583,13 +587,11 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
         final CheckItem watchItem = new CheckItem();
         watchItem.setText(getWatchClsLabel());
         watchItem.setCls("toolbar-button");
-//        watchItem.setIcon("images/eye.png");
         watchButton.addItem(watchItem);
 
         watchBranchItem = new CheckItem();
         watchBranchItem.setText(getWatchBranchClsLabel());
         watchBranchItem.setCls("toolbar-button");
-//        watchBranchItem.setIcon("images/eye-down.png");
         watchBranchItem.setChecked(true);
         watchButton.addItem(watchBranchItem);
 
@@ -1093,10 +1095,11 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
 
     public void setTreeNodeIcon(final TreeNode node, EntityData entityData) {
         if(entityData instanceof SubclassEntityData && ((SubclassEntityData) entityData).isDeprecated()) {
-            node.setIconCls("protege-deprecated-class-icon");
+            node.setIconCls(BUNDLE.style().deprecatedClassIcon());
         }
         else {
-            node.setIconCls("protege-class-icon");
+            node.setIconCls(BUNDLE.style().classIcon());
+//            node.setIcon(WebProtegeClientBundle.BUNDLE.classIcon().getSafeUri().asString());
         }
 
     }
@@ -1365,12 +1368,12 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
             final String idLocalAnnotationCnt = node.getId() + SUFFIX_ID_LOCAL_ANNOTATION_COUNT;
 
             // TODO: add a css for this
-            text = text + "<span style=\"padding-left: 2px;\"><img id=\"" + idLocalAnnotationImg + "\" src=\"images/comment-small-filled.png\" title=\"" + UIUtil.getNiceNoteCountText(localAnnotationsCount) + " on this category. \nClick on the icon to see and edit the notes\" /></span>" + "<span id=\"" + idLocalAnnotationCnt + "\" style=\"font-size:95%;color:#15428B;font-weight:bold;\">" + localAnnotationsCount + "</span>";
+            text = text + "<span style=\"padding-left: 2px;\"><img id=\"" + idLocalAnnotationImg + "\" src=\"" + BUNDLE.commentSmallFilledIcon().getSafeUri().asString() + "\" title=\"" + UIUtil.getNiceNoteCountText(localAnnotationsCount) + " on this category. \nClick on the icon to see and edit the notes\" /></span>" + "<span id=\"" + idLocalAnnotationCnt + "\" style=\"font-size:95%;color:#15428B;font-weight:bold;\">" + localAnnotationsCount + "</span>";
         }
 
         final int childrenAnnotationsCount = entityData.getChildrenAnnotationsCount();
         if (childrenAnnotationsCount > 0) {
-            text = text + " <span style=\"padding-left: 2px;\"><img src=\"images/comment-small.png\" title=\"" + UIUtil.getNiceNoteCountText(childrenAnnotationsCount) + " on the children of this category\" /></span>" + "<span style=\"font-size:90%;color:#999999;\">" + childrenAnnotationsCount + "</span>";
+            text = text + " <span style=\"padding-left: 2px;\"><img src=\"" + BUNDLE.commentSmallIcon().getSafeUri().asString() + "\" title=\"" + UIUtil.getNiceNoteCountText(childrenAnnotationsCount) + " on the children of this category\" /></span>" + "<span style=\"font-size:90%;color:#999999;\">" + childrenAnnotationsCount + "</span>";
         }
 
         return text;
@@ -1381,26 +1384,12 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
         if (w.isEmpty()) {
             return "";
         }
-//        switch (watchType) {
         if(w.iterator().next() instanceof EntityFrameWatch) {
-            return "<img src=\"images/eye.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched\"></img>";
-//            return "<img src=\"images/tag_blue.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched\"></img>";
+            return "<img src=\"" + BUNDLE.eyeIcon().getSafeUri().asString() + "\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched\"></img>";
         }
         else {
-            return "<img src=\"images/eye-down.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched branch\"></img>";
-//            return "<img src=\"images/tag_blue_add.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched branch\"></img>";
+            return "<img src=\"" + BUNDLE.eyeDownIcon().getSafeUri().asString() + "\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched branch\"></img>";
         }
-//            case ENTITY_WATCH:
-//
-////                return "<img src=\"images/tag_blue.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched\"></img>";
-//            case BRANCH_WATCH:
-//
-////                return "<img src=\"images/tag_blue_add.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched branch\"></img>";
-//            case BOTH:
-//                return "<img src=\"images/tag_blue.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched\"></img>" + "<img src=\"images/tag_blue_add.png\" " + ClassTreePortlet.WATCH_ICON_STYLE_STRING + " title=\"" + " Watched branch\"></img>";
-//            default:
-//                return "";
-//        }
     }
 
     private void showClassNotes(final Node node) {
