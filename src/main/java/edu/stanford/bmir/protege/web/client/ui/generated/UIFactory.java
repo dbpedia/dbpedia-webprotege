@@ -187,15 +187,10 @@ public class UIFactory {
             else if (portletJavaClassName.endsWith(OWLEntityDescriptionEditorPortlet.class.getName())) {
                 return new OWLEntityDescriptionEditorPortlet(project);
             }
-<<<<<<< HEAD
             else if(portletJavaClassName.endsWith(DBPediaPortlet.class.getName())) {
                 return new DBPediaPortlet(project);
             }
-        }
-        catch (Exception e) {
-=======
         } catch (Exception e) {
->>>>>>> master
             GWT.log("Error when creating portlet", e);
         }
         return null;

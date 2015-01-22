@@ -29,10 +29,6 @@ public class DBPediaPortlet extends AbstractOWLEntityPortlet {
     }
 
     @Override
-    public void reload() {
-    }
-
-    @Override
     public void initialize() {
         basePanel = new DBPediaBasePanel(getProjectId(), this);
         setTitle("DBPedia");
