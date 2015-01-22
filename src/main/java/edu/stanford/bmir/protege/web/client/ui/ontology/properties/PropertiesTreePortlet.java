@@ -25,6 +25,7 @@ import edu.stanford.bmir.protege.web.client.ui.ontology.entity.CreateEntityDialo
 import edu.stanford.bmir.protege.web.client.ui.ontology.entity.CreateEntityInfo;
 import edu.stanford.bmir.protege.web.client.ui.portlet.AbstractOWLEntityPortlet;
 import edu.stanford.bmir.protege.web.client.ui.selection.SelectionEvent;
+import edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle;
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
 import edu.stanford.bmir.protege.web.shared.entity.OWLPropertyData;
 import edu.stanford.bmir.protege.web.shared.event.BrowserTextChangedEvent;
@@ -36,6 +37,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle.BUNDLE;
 
 // TODO: add action descriptions and labels in the config similar to the ClassTreePortlet
 public class PropertiesTreePortlet extends AbstractOWLEntityPortlet {
@@ -56,15 +59,6 @@ public class PropertiesTreePortlet extends AbstractOWLEntityPortlet {
 
     public PropertiesTreePortlet(Project project) {
         super(project);
-    }
-
-    @Override
-    public void reload() {
-        Node[] nodes = treePanel.getRootNode().getChildNodes();
-        for (Node node : nodes) {
-            node.remove();
-        }
-        getSubProperties(null, true);
     }
 
     @Override
@@ -165,9 +159,6 @@ public class PropertiesTreePortlet extends AbstractOWLEntityPortlet {
                 }
             }
         });
-
-
-
     }
 
     private void selectNode(TreeNode node) {
@@ -617,16 +608,16 @@ public class PropertiesTreePortlet extends AbstractOWLEntityPortlet {
         PropertyEntityData entityData = (PropertyEntityData) node.getUserObject();
         PropertyType type = entityData.getPropertyType();
         if (type == PropertyType.OBJECT) {
-            node.setIconCls("protege-object-property-icon");
+            node.setIconCls(BUNDLE.style().objectPropertyIcon());
         }
         else if (type == PropertyType.DATATYPE) {
-            node.setIconCls("protege-datatype-property-icon");
+            node.setIconCls(BUNDLE.style().dataPropertyIcon());
         }
         else if (type == PropertyType.ANNOTATION) {
-            node.setIconCls("protege-annotation-property-icon");
+            node.setIconCls(BUNDLE.style().annotationPropertyIcon());
         }
         else {
-            node.setIconCls("protege-slot-icon");
+            node.setIconCls(BUNDLE.style().objectPropertyIcon());
         }
     }
 
@@ -664,7 +655,7 @@ public class PropertiesTreePortlet extends AbstractOWLEntityPortlet {
         String text = entityData.getBrowserText();
         int localAnnotationsCount = entityData.getLocalAnnotationsCount();
         if (localAnnotationsCount > 0) {
-            text = text + "<img src=\"images/comment-small-filled.png\" />" + " " + localAnnotationsCount;
+            text = text + "<img src=\"" + WebProtegeClientBundle.BUNDLE.commentSmallFilledIcon().getSafeUri().asString() + "\" />" + " " + localAnnotationsCount;
         }
         int childrenAnnotationsCount = entityData.getChildrenAnnotationsCount();
         if (childrenAnnotationsCount > 0) {

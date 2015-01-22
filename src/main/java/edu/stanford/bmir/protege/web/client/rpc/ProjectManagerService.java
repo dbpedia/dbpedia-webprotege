@@ -2,11 +2,11 @@ package edu.stanford.bmir.protege.web.client.rpc;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import edu.stanford.bmir.protege.web.shared.projectsettings.ProjectSettings;
 import edu.stanford.bmir.protege.web.client.rpc.data.NewProjectSettings;
 import edu.stanford.bmir.protege.web.client.rpc.data.NotProjectOwnerException;
 import edu.stanford.bmir.protege.web.client.rpc.data.NotSignedInException;
 import edu.stanford.bmir.protege.web.client.rpc.data.ProjectType;
-import edu.stanford.bmir.protege.web.client.ui.projectconfig.ProjectConfigurationInfo;
 import edu.stanford.bmir.protege.web.shared.project.*;
 
 import java.util.List;
@@ -63,9 +63,5 @@ public interface ProjectManagerService extends RemoteService {
     ProjectType getProjectType(ProjectId projectId) throws ProjectNotRegisteredException;
 
     void setProjectType(ProjectId projectId, ProjectType projectType) throws NotProjectOwnerException, ProjectNotRegisteredException;
-    
-    
-    ProjectConfigurationInfo getProjectConfiguration(ProjectId projectId) throws ProjectNotRegisteredException;
 
-    void setProjectConfiguration(ProjectConfigurationInfo configuration) throws ProjectNotRegisteredException, NotProjectOwnerException;
 }

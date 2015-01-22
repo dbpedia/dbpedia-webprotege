@@ -1,9 +1,12 @@
 package edu.stanford.bmir.protege.web.server.owlapi;
 
+import edu.stanford.bmir.protege.web.client.rpc.data.ProjectType;
 import edu.stanford.bmir.protege.web.server.MetaProjectManager;
+import edu.stanford.bmir.protege.web.server.projectsettings.ProjectSettingsManager;
 import edu.stanford.bmir.protege.web.shared.project.ProjectDetails;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.project.UnknownProjectException;
+import edu.stanford.bmir.protege.web.shared.projectsettings.ProjectSettings;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
 import edu.stanford.smi.protege.model.Instance;
 import edu.stanford.smi.protege.model.KnowledgeBase;
@@ -18,13 +21,15 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Author: Matthew Horridge<br>
  * Stanford University<br>
  * Bio-Medical Informatics Research Group<br>
  * Date: 15/08/2012
  */
-public class OWLAPIProjectMetadataManager {
+public class OWLAPIProjectMetadataManager implements ProjectSettingsManager {
 
     private static final OWLAPIProjectMetadataManager instance = new OWLAPIProjectMetadataManager();
 
@@ -53,8 +58,33 @@ public class OWLAPIProjectMetadataManager {
         return instance;
     }
 
+    @Override
+    public void setProjectSettings(ProjectSettings projectSettings) {
+        try {
+            WRITE_LOCK.lock();
+            ProjectId projectId = projectSettings.getProjectId();
+            setProjectType(projectId, new OWLAPIProjectType(projectSettings.getProjectType().getName()));
+            setDescription(projectId, projectSettings.getProjectDescription());
+            setDisplayName(projectId, projectSettings.getProjectDisplayName());
+        } finally {
+            WRITE_LOCK.unlock();
+        }
 
-    // ProjectData
+    }
+
+    @Override
+    public ProjectSettings getProjectSettings(ProjectId projectId) throws UnknownProjectException{
+        try {
+            READ_LOCK.lock();
+            return new ProjectSettings(projectId,
+                    new ProjectType(getType(projectId).getProjectTypeName()), getDisplayName(projectId),
+                    getDescription(projectId));
+        } finally {
+            READ_LOCK.unlock();
+        }
+    }
+
+// ProjectData
     
     public synchronized Set<ProjectId> getProjects() {
         try {
@@ -117,6 +147,16 @@ public class OWLAPIProjectMetadataManager {
         }
         else {
             return pi.getProtegeInstance().getDirectOwnSlotValue(displayNameSlot).toString();
+        }
+    }
+
+    public void setDisplayName(ProjectId projectId, String displayName) {
+        checkNotNull(displayName);
+        ProjectInstance pi = getProjectInstance(projectId);
+        Slot displayNameSlot = pi.getProtegeInstance().getKnowledgeBase().getSlot("displayName");
+        if(displayNameSlot != null) {
+            // If it's not present then it's some really old version of the metaproject
+            pi.getProtegeInstance().setDirectOwnSlotValue(displayNameSlot, displayName);
         }
     }
 

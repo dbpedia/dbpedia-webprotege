@@ -48,17 +48,20 @@ public class UsagePortlet extends AbstractOWLEntityPortlet {
         usageView.addValueChangeHandler(new ValueChangeHandler<UsageFilter>() {
             @Override
             public void onValueChange(ValueChangeEvent<UsageFilter> event) {
-                reload();
+                updateDisplayForSelectedEntity();
             }
         });
     }
 
     @Override
-    public void reload() {
+    protected void handleAfterSetEntity(Optional<OWLEntityData> entityData) {
+        updateDisplayForSelectedEntity();
+    }
+
+    private void updateDisplayForSelectedEntity() {
         final Optional<OWLEntityData> sel = getSelectedEntityData();
         if(sel.isPresent()) {
-            final OWLEntityData entityData = sel.get();
-            showUsageForEntity(entityData);
+            showUsageForEntity(sel.get());
         }
         else {
             setTitle("No entity selected");

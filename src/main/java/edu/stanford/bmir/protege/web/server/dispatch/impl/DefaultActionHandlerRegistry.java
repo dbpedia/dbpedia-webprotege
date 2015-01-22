@@ -28,8 +28,12 @@ import edu.stanford.bmir.protege.web.server.notes.AddReplyToNoteActionHandler;
 import edu.stanford.bmir.protege.web.server.notes.DeleteNoteActionHandler;
 import edu.stanford.bmir.protege.web.server.notes.SetNoteStatusActionHandler;
 import edu.stanford.bmir.protege.web.server.metrics.GetMetricsActionHandler;
+import edu.stanford.bmir.protege.web.server.owlapi.OWLAPIProjectMetadataManager;
+import edu.stanford.bmir.protege.web.server.projectsettings.GetProjectSettingsActionHandler;
+import edu.stanford.bmir.protege.web.server.projectsettings.SetProjectSettingsActionHandler;
 import edu.stanford.bmir.protege.web.server.render.GetEntityRenderingActionHandler;
 import edu.stanford.bmir.protege.web.server.usage.GetUsageActionHandler;
+import edu.stanford.bmir.protege.web.server.user.GetUserIdsActionHandler;
 import edu.stanford.bmir.protege.web.server.watches.AddWatchActionHandler;
 import edu.stanford.bmir.protege.web.server.watches.RemoveWatchActionHandler;
 import edu.stanford.bmir.protege.web.shared.app.GetClientApplicationPropertiesAction;
@@ -55,8 +59,11 @@ import edu.stanford.bmir.protege.web.shared.notes.SetNoteStatusAction;
 import edu.stanford.bmir.protege.web.shared.project.GetAvailableProjectsAction;
 import edu.stanford.bmir.protege.web.shared.project.MoveProjectsToTrashAction;
 import edu.stanford.bmir.protege.web.shared.project.RemoveProjectsFromTrashAction;
+import edu.stanford.bmir.protege.web.shared.projectsettings.GetProjectSettingsAction;
+import edu.stanford.bmir.protege.web.shared.projectsettings.SetProjectSettingsAction;
 import edu.stanford.bmir.protege.web.shared.renderer.GetEntityRenderingAction;
 import edu.stanford.bmir.protege.web.shared.usage.GetUsageAction;
+import edu.stanford.bmir.protege.web.shared.user.GetUserIdsAction;
 import edu.stanford.bmir.protege.web.shared.watches.AddWatchAction;
 import edu.stanford.bmir.protege.web.shared.watches.RemoveWatchesAction;
 
@@ -77,6 +84,8 @@ public class DefaultActionHandlerRegistry implements ActionHandlerRegistry {
 
     private final MetaProjectManager metaProjectManager = MetaProjectManager.getManager();
 
+    private final OWLAPIProjectMetadataManager projectMetadataManager = OWLAPIProjectMetadataManager.getManager();
+
     // NOT a concurrent map.  This is only written to in the constructor. At runtime it's essentially immutable and the
     // basic maps are safe for multiple readers
     private Map<Class<?>, ActionHandler<?, ?>> registry = new HashMap<Class<?>, ActionHandler<?, ?>>();
@@ -85,11 +94,16 @@ public class DefaultActionHandlerRegistry implements ActionHandlerRegistry {
 
         register(new GetClientApplicationPropertiesActionHandler(), GetClientApplicationPropertiesAction.class);
 
+        register(new GetUserIdsActionHandler(metaProjectManager.getMetaProject()), GetUserIdsAction.class);
+
         register(new GetAvailableProjectsHandler(), GetAvailableProjectsAction.class);
 
         register(new LoadProjectActionHandler(), LoadProjectAction.class);
 
         register(new GetProjectEventsActionHandler(), GetProjectEventsAction.class);
+
+        register(new GetProjectSettingsActionHandler(projectMetadataManager), GetProjectSettingsAction.class);
+        register(new SetProjectSettingsActionHandler(projectMetadataManager), SetProjectSettingsAction.class);
 
         register(new GetClassFrameActionHandler(), GetClassFrameAction.class);
         register(new UpdateClassFrameActionHandler(), UpdateClassFrameAction.class);

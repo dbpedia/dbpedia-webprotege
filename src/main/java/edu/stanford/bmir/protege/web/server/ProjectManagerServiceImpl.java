@@ -1,8 +1,8 @@
 package edu.stanford.bmir.protege.web.server;
 
+import edu.stanford.bmir.protege.web.shared.projectsettings.ProjectSettings;
 import edu.stanford.bmir.protege.web.client.rpc.ProjectManagerService;
 import edu.stanford.bmir.protege.web.client.rpc.data.*;
-import edu.stanford.bmir.protege.web.client.ui.projectconfig.ProjectConfigurationInfo;
 import edu.stanford.bmir.protege.web.server.logging.WebProtegeLogger;
 import edu.stanford.bmir.protege.web.server.logging.WebProtegeLoggerManager;
 import edu.stanford.bmir.protege.web.server.owlapi.*;
@@ -164,27 +164,4 @@ public class ProjectManagerServiceImpl extends WebProtegeRemoteServiceServlet im
         OWLAPIProjectMetadataManager mdm = OWLAPIProjectMetadataManager.getManager();
         mdm.setProjectType(projectId, new OWLAPIProjectType(projectType.getName()));
     }
-
-    public ProjectConfigurationInfo getProjectConfiguration(ProjectId projectId) throws ProjectNotRegisteredException {
-        ProjectType projectType = getProjectType(projectId);
-        String description = OWLAPIProjectMetadataManager.getManager().getDescription(projectId);
-        return new ProjectConfigurationInfo(projectId, projectType, "en", description);
-    }
-
-    public void setProjectConfiguration(ProjectConfigurationInfo configuration) throws ProjectNotRegisteredException, NotProjectOwnerException {
-        ProjectId projectId = configuration.getProjectId();
-        if(!isSignedInUserProjectOwner(projectId)) {
-            throw new NotProjectOwnerException(projectId);
-        }
-        OWLAPIProjectMetadataManager mdm = OWLAPIProjectMetadataManager.getManager();
-        OWLAPIProjectType projectType = OWLAPIProjectType.getProjectType(configuration.getProjectType().getName());
-        mdm.setProjectType(projectId, projectType);
-        mdm.setDescription(projectId, configuration.getProjectDescription());
-//        if(!mdm.getDefaultLanguage(projectId).equals(configuration.getDefaultLanguage())) {
-//            mdm.setDefaultLanguage(projectId, configuration.getDefaultLanguage());
-//        }
-
-    }
-
-
 }
