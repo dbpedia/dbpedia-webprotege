@@ -242,7 +242,7 @@ public class ProjectChangeXMLBuilder {
 
 					}
 
-					// ADD SUBPROPERTIES
+					// ADD SUBPROPERTIES     // change to super properties!!! TODO
 
 					Set<OWLObjectPropertyExpression> subProps = ((OWLObjectProperty) entity)
 							.getSubProperties(project.getRootOntology());

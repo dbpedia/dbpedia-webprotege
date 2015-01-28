@@ -10,6 +10,10 @@
 	<source path="client" />
 	<source path="shared" />
 
+	<inherits name='fu.berlin.csw.AspectPortlet.client.rpc.AspectRPC' />
+	<inherits
+		name='fu.berlin.csw.AspectPortlet.client.ui.AspectPortlet' />
+		
 	<inherits name='fu.berlin.csw.DBPediaApp.client.rpc.DBPediaRPC' />
 	<inherits
 		name='fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet' />

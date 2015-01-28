@@ -95,6 +95,7 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 					InputStream is = builder.getXMLInputStream(currentUserId,
 							currentUser);
 					
+
 					InputStreamEntity reqEntity = new InputStreamEntity(is);
 					reqEntity.setContentType("application/xml");
 					reqEntity.setChunked(false);
