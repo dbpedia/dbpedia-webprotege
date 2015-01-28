@@ -54,40 +54,35 @@ import java.util.*;
  */
 public class UIFactory {
 
-    public static final String PORTLET_SUFFIX = "Portlet";
+	public static final String PORTLET_SUFFIX = "Portlet";
 
-    /*
-     * Tab factory
-     */
+	/*
+	 * Tab factory
+	 */
 
-    public static AbstractTab createTab(Project project, String tabJavaClassName) {
-        if (tabJavaClassName.equals(ClassesTab.class.getName())) {
-            return new ClassesTab(project);
-        }
-        else if (tabJavaClassName.equals(PropertiesTab.class.getName())) {
-            return new PropertiesTab(project);
-        }
-        else if (tabJavaClassName.equals(IndividualsTab.class.getName())) {
-            return new IndividualsTab(project);
-        }
-        else if (tabJavaClassName.equals(NotesTab.class.getName())) {
-            return new NotesTab(project);
-        }
-        else if (tabJavaClassName.equals(OtherTerminologiesTab.class.getName())) {
-            return new OtherTerminologiesTab(project);
-        }
-        else if (tabJavaClassName.equals(UserDefinedTab.class.getName())) {
-            return new UserDefinedTab(project);
-        }
-        else if (tabJavaClassName.equals(ManageHierarchyTab.class.getName())) {
-            return new ManageHierarchyTab(project);
-        }
-        return null;
-    }
+	public static AbstractTab createTab(Project project, String tabJavaClassName) {
+		if (tabJavaClassName.equals(ClassesTab.class.getName())) {
+			return new ClassesTab(project);
+		} else if (tabJavaClassName.equals(PropertiesTab.class.getName())) {
+			return new PropertiesTab(project);
+		} else if (tabJavaClassName.equals(IndividualsTab.class.getName())) {
+			return new IndividualsTab(project);
+		} else if (tabJavaClassName.equals(NotesTab.class.getName())) {
+			return new NotesTab(project);
+		} else if (tabJavaClassName.equals(OtherTerminologiesTab.class
+				.getName())) {
+			return new OtherTerminologiesTab(project);
+		} else if (tabJavaClassName.equals(UserDefinedTab.class.getName())) {
+			return new UserDefinedTab(project);
+		} else if (tabJavaClassName.equals(ManageHierarchyTab.class.getName())) {
+			return new ManageHierarchyTab(project);
+		}
+		return null;
+	}
 
-    /*
-     * Portlet factory
-     */
+	/*
+	 * Portlet factory
+	 */
 
     public static EntityPortlet createPortlet(Project project, String portletJavaClassName) {
         try {
@@ -208,54 +203,58 @@ public class UIFactory {
         return Arrays.asList(tabs);
     }
 
-    public static List<String> getAvailablePortletNames() {
-        /*
-         * Removed portlets:
-         * PropertyFieldPortlet.class.getName()
-         * ChangeTreePortlet.class.getName(), ChangeSummaryPortlet.class.getName(), ChangeTablePortlet.class.getName(),
-         * NotesPortlet.class.getName(),
-         */
-        String[] portlets = {OWLEntityDescriptionEditorPortlet.class.getName(), OWLEntityDescriptionBrowserPortlet
-                .class.getName(), UsagePortlet.class.getName(), OntologyIdPortlet.class.getName(),
-                OntologyAnnotationsPortlet.class.getName(), EditorPortlet.class.getName(),
-                DiscussionThreadPortlet.class.getName(), ChangeSummaryPortlet.class.getName(),
-                ProjectFeedPortlet.class.getName(), AnnotationsPortlet.class.getName(),
-                AllPropertiesPortlet.class.getName(), PropertiesViewPortlet.class.getName(),
-                ClassTreePortlet.class.getName(), ImportsTreePortlet.class.getName(),
-                IndividualsListPortlet.class.getName(), MetricsPortlet.class.getName(),
-                PropertiesTreePortlet.class.getName(),
-                BioPortalSearchPortlet.class.getName(), SuperclassesPortlet.class.getName(),
-                ChangesPortlet.class.getName(), WatchedEntitiesPortlet.class.getName(),
-                OBOTermCrossProductPortlet.class.getName(),
-                OBOTermRelationshipPortlet.class.getName(), OBOTermSynonymsPortlet.class.getName(),
-                OBOTermIdEditorPortlet.class.getName(),
-                OBOTermDefinitionPortlet.class.getName(), OBOTermXRefsEditorPortlet.class.getName(),
-                RevisionsPortlet.class.getName(),
-                DBPediaPortlet.class.getName()};
+	public static List<String> getAvailablePortletNames() {
+		/*
+		 * Removed portlets: PropertyFieldPortlet.class.getName()
+		 * ChangeTreePortlet.class.getName(),
+		 * ChangeSummaryPortlet.class.getName(),
+		 * ChangeTablePortlet.class.getName(), NotesPortlet.class.getName(),
+		 */
+		String[] portlets = { DBPediaPortlet.class.getName(),
+				OWLEntityDescriptionEditorPortlet.class.getName(),
+				OWLEntityDescriptionBrowserPortlet.class.getName(),
+				UsagePortlet.class.getName(),
+				OntologyIdPortlet.class.getName(),
+				OntologyAnnotationsPortlet.class.getName(),
+				EditorPortlet.class.getName(),
+				DiscussionThreadPortlet.class.getName(),
+				ChangeSummaryPortlet.class.getName(),
+				ProjectFeedPortlet.class.getName(),
+				AnnotationsPortlet.class.getName(),
+				AllPropertiesPortlet.class.getName(),
+				PropertiesViewPortlet.class.getName(),
+				ClassTreePortlet.class.getName(),
+				ImportsTreePortlet.class.getName(),
+				IndividualsListPortlet.class.getName(),
+				MetricsPortlet.class.getName(),
+				PropertiesTreePortlet.class.getName(),
+				BioPortalSearchPortlet.class.getName(),
+				SuperclassesPortlet.class.getName(),
+				ChangesPortlet.class.getName(),
+				WatchedEntitiesPortlet.class.getName(),
+				OBOTermCrossProductPortlet.class.getName(),
+				OBOTermRelationshipPortlet.class.getName(),
+				OBOTermSynonymsPortlet.class.getName(),
+				OBOTermIdEditorPortlet.class.getName(),
+				OBOTermDefinitionPortlet.class.getName(),
+				OBOTermXRefsEditorPortlet.class.getName(),
+				RevisionsPortlet.class.getName()};
 
-        List<String> portletsList = Arrays.asList(portlets);
-        Collections.sort(portletsList, new Comparator<String>() {
-            public int compare(String p1, String p2) {
-                String n1 = p1.substring(p1.lastIndexOf(".") + 1);
-                String n2 = p2.substring(p2.lastIndexOf(".") + 1);
-                return n1.compareTo(n2);
-            }
-        });
-        return portletsList;
-    }
+		List<String> portletsList = Arrays.asList(portlets);
+		Collections.sort(portletsList, new Comparator<String>() {
+			public int compare(String p1, String p2) {
+				String n1 = p1.substring(p1.lastIndexOf(".") + 1);
+				String n2 = p2.substring(p2.lastIndexOf(".") + 1);
+				return n1.compareTo(n2);
+			}
+		});
+		return portletsList;
+	}
 
-    /*
-     * Generic utils
-     */
+	/*
+	 * Generic utils
+	 */
 
-    public static List<String> getAvailableTabShortNames() {
-        List<String> tabs = getAvailableTabNames();
-        List<String> shortNames = new ArrayList<String>();
-        for (String tab : tabs) {
-            shortNames.add(tab.substring(tab.lastIndexOf(".") + 1));
-        }
-        return shortNames;
-    }
 
     /**
      * @return A map from the short names of the portlets to the full java class
@@ -270,47 +269,50 @@ public class UIFactory {
         return map;
     }
 
-    /**
-     * Extracts a short human readable name from a portlet java class name.
-     *
-     * @param portletClassName The fully qualified class name for the portlet
-     * @return The short name for the portlet (not null).
-     */
-    private static String getPortletShortName(String portletClassName) {
-        int simpleNameSeparator = portletClassName.lastIndexOf(".");
-        if (simpleNameSeparator == -1) {
-            return portletClassName;
-        }
-        String simpleName = portletClassName.substring(simpleNameSeparator + 1);
-        String strippedName;
-        if (simpleName.endsWith(PORTLET_SUFFIX)) {
-            strippedName = simpleName.substring(0, simpleName.length() - PORTLET_SUFFIX.length());
-        }
-        else {
-            strippedName = simpleName;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < strippedName.length(); i++) {
-            char ch = strippedName.charAt(i);
-            boolean upperCase = Character.isUpperCase(ch);
-            if (upperCase) {
-                if (isNextCharacterLowerCase(strippedName, i) || isPreviousCharacterLowerCase(strippedName, i)) {
-                    sb.append(" ");
-                }
-            }
-            sb.append(ch);
-        }
-        return sb.toString().trim();
-    }
+	/**
+	 * Extracts a short human readable name from a portlet java class name.
+	 * 
+	 * @param portletClassName
+	 *            The fully qualified class name for the portlet
+	 * @return The short name for the portlet (not null).
+	 */
+	private static String getPortletShortName(String portletClassName) {
+		int simpleNameSeparator = portletClassName.lastIndexOf(".");
+		if (simpleNameSeparator == -1) {
+			return portletClassName;
+		}
+		String simpleName = portletClassName.substring(simpleNameSeparator + 1);
+		String strippedName;
+		if (simpleName.endsWith(PORTLET_SUFFIX)) {
+			strippedName = simpleName.substring(0, simpleName.length()
+					- PORTLET_SUFFIX.length());
+		} else {
+			strippedName = simpleName;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < strippedName.length(); i++) {
+			char ch = strippedName.charAt(i);
+			boolean upperCase = Character.isUpperCase(ch);
+			if (upperCase) {
+				if (isNextCharacterLowerCase(strippedName, i)
+						|| isPreviousCharacterLowerCase(strippedName, i)) {
+					sb.append(" ");
+				}
+			}
+			sb.append(ch);
+		}
+		return sb.toString().trim();
+	}
 
-    private static boolean isPreviousCharacterLowerCase(String strippedName, int i) {
-        return i > 0 && Character.isLowerCase(strippedName.charAt(i - 1));
-    }
+	private static boolean isPreviousCharacterLowerCase(String strippedName,
+			int i) {
+		return i > 0 && Character.isLowerCase(strippedName.charAt(i - 1));
+	}
 
-    private static boolean isNextCharacterLowerCase(String s, int currentIndex) {
-        return currentIndex < s.length() - 1 && Character.isLowerCase(s.charAt(currentIndex + 1));
-    }
-
+	private static boolean isNextCharacterLowerCase(String s, int currentIndex) {
+		return currentIndex < s.length() - 1
+				&& Character.isLowerCase(s.charAt(currentIndex + 1));
+	}
 
     /**
      * @return A map from the short names of tabs (label) to the full java class
@@ -325,5 +327,4 @@ public class UIFactory {
         }
         return map;
     }
-
 }
