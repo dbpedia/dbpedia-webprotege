@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -63,6 +64,8 @@ public class ProjectChangeXMLBuilder {
 	private RevisionNumber lastRevisionNumber = RevisionNumber
 			.getRevisionNumber(0);
 
+    Logger logger = Logger.getLogger(ProjectChangeXMLBuilder.class.getName());
+    
 	public ProjectChangeXMLBuilder(ProjectId projectId) {
 		this.projectId = projectId;
 		this.project = OWLAPIProjectManager.getProjectManager().getProject(
@@ -132,6 +135,8 @@ public class ProjectChangeXMLBuilder {
 
 		synchronized (currentChangedEntities) {
 			for (DBPediaChangeData changeData : currentChangedEntities) {
+                
+                logger.info("In Change Set: " + changeData.getEntityData().toString());
 
 				if (!(currentUserId.equals(changeData.getUser()))) {
 					continue;
