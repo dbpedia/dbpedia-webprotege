@@ -1,6 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
 	xmlns:p='urn:import:edu.stanford.bmir.protege.web.client.ui.library.timelabel'>
+    <ui:with field="wp" type="edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle"/>
 	<ui:style type="fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.CommitChangesEventPanel.MyStyle">
 	.change-event-panel {
 		border-bottom: solid 1px silver;
@@ -28,7 +29,7 @@
 		<table>
 			<tr>
 				<td valign="top">
-					<g:Image url="images/edit.png" />
+					<g:Image resource="{wp.editIcon}" />
 				</td>
 				<td valign="top">
 					<div>
