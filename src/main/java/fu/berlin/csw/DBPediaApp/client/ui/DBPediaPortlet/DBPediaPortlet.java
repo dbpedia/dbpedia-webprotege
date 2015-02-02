@@ -32,7 +32,7 @@ public class DBPediaPortlet extends AbstractOWLEntityPortlet {
     public void initialize() {
         basePanel = new DBPediaBasePanel(getProjectId(), this);
         setTitle("DBPedia");
-        setSize(300, 180);
+        setSize(300, 380);
         add(basePanel);
         
     }
