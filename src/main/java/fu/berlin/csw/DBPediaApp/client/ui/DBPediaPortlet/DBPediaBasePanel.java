@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
 import edu.stanford.bmir.protege.web.shared.event.HasEventHandlerManagement;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedEvent;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedHandler;
@@ -65,6 +66,7 @@ public class DBPediaBasePanel extends Composite {
 		proxy = (DBPediaServiceAsync) GWT.create(DBPediaService.class);
 		callbackMessage = new AsyncCallback<Message>() {
 			public void onFailure(Throwable caught) {
+                UIUtil.hideLoadProgessBar();
 				Window.alert("Commit Error!");
 			}
 
@@ -76,6 +78,7 @@ public class DBPediaBasePanel extends Composite {
 					CommitChangesEventPanel wg = (CommitChangesEventPanel) it.next();
 					wg.setCommitted();
 				}
+                UIUtil.hideLoadProgessBar();
 				Window.alert(message);
 			}
 		};
@@ -132,7 +135,8 @@ public class DBPediaBasePanel extends Composite {
 
 	@UiHandler("commit")
 	void handleClick(ClickEvent e) {
+        UIUtil.showLoadProgessBar("Please wait", "Commit Changes.");
 		proxy.getMessage(projectId, callbackMessage);
-		
+        changeEventTable.clear();
 	}
 }
