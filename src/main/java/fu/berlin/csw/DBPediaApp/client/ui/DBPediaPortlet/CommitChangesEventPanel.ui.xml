@@ -2,7 +2,7 @@
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
 	xmlns:p='urn:import:edu.stanford.bmir.protege.web.client.ui.library.timelabel'>
     <ui:with field="wp" type="edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle"/>
-	<ui:style type="fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.CommitChangesEventPanel.MyStyle">
+    <ui:style>
 	.change-event-panel {
 		border-bottom: solid 1px silver;
 	}

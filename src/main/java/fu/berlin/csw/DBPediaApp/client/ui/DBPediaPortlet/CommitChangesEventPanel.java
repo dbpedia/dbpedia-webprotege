@@ -24,12 +24,6 @@ import java.util.Set;
 public class CommitChangesEventPanel extends Composite implements
 		DBPediaItemDisplay {
 
-	interface MyStyle extends CssResource {
-		String committed();
-
-		String uncommitted();
-	}
-
 	@UiField
 	protected InlineLabel userNameLabel;
 
@@ -38,9 +32,6 @@ public class CommitChangesEventPanel extends Composite implements
 
 	@UiField
 	protected FlexTable changedEntitiesTable;
-
-	@UiField
-	MyStyle style;
 
 	interface ChangeEventPanelUiBinder extends
 			UiBinder<HTMLPanel, CommitChangesEventPanel> {
@@ -78,9 +69,5 @@ public class CommitChangesEventPanel extends Composite implements
 	@Override
 	public void updateElapsedTimeDisplay() {
 		timeLabel.update();
-	}
-
-	public void setCommitted() {
-		timeLabel.setStyleName(style.committed());
 	}
 }
