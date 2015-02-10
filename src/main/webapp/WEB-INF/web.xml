@@ -43,7 +43,7 @@
 
     <servlet>
         <servlet-name>MediawikiServiceImpl</servlet-name>
-        <servlet-class>edu.stanford.bmir.protege.web.server.MediawikiServiceImpl</servlet-class>
+        <servlet-class>fu.berlin.csw.dbpedia.server.MediawikiServiceImpl</servlet-class>
     </servlet>
 
 	<servlet>
@@ -140,7 +140,7 @@
 
 	<servlet>
 		<servlet-name>DBPediaServiceImpl</servlet-name>
-		<servlet-class>fu.berlin.csw.server.DBPediaApp.DBPediaServiceImpl</servlet-class>
+		<servlet-class>fu.berlin.csw.dbpedia.server.DBPediaServiceImpl</servlet-class>
 	</servlet>
 
 	<!-- Servlet mappings -->
