@@ -6,7 +6,6 @@ import java.util.Collections;
 import edu.stanford.bmir.protege.web.client.project.Project;
 import edu.stanford.bmir.protege.web.client.rpc.data.EntityData;
 import edu.stanford.bmir.protege.web.client.ui.portlet.AbstractOWLEntityPortlet;
-import fu.berlin.csw.dbpedia.client.ui.portlet.DBPediaBasePanel;
 
 /**
  * Author: Matthew Horridge<br>

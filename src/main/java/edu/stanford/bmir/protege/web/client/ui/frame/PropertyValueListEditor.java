@@ -16,6 +16,7 @@ import edu.stanford.bmir.protege.web.client.ui.editor.ValueEditor;
 import edu.stanford.bmir.protege.web.client.ui.editor.ValueEditorFactory;
 import edu.stanford.bmir.protege.web.client.ui.editor.ValueListEditor;
 import edu.stanford.bmir.protege.web.client.ui.editor.ValueListEditorImpl;
+import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
 import edu.stanford.bmir.protege.web.shared.DirtyChangedHandler;
 import edu.stanford.bmir.protege.web.shared.HasEntityDataProvider;
 import edu.stanford.bmir.protege.web.shared.entity.*;
@@ -93,6 +94,7 @@ public class PropertyValueListEditor extends Composite implements ValueEditor<Pr
             }
         }
         editor.setValue(vals);
+        UIUtil.hideLoadProgessBar();
     }
 
 

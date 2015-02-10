@@ -35,7 +35,7 @@ import edu.stanford.bmir.protege.web.client.ui.projectfeed.ProjectFeedPortlet;
 import edu.stanford.bmir.protege.web.client.ui.tab.AbstractTab;
 import edu.stanford.bmir.protege.web.client.ui.tab.UserDefinedTab;
 import edu.stanford.bmir.protege.web.client.usage.UsagePortlet;
-import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet;
+import fu.berlin.csw.dbpedia.client.ui.portlet.DBPediaPortlet;
 
 import java.util.*;
 
