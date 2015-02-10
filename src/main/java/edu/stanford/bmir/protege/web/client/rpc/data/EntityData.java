@@ -75,8 +75,18 @@ public class EntityData implements Serializable {
         this.name = name;
     }
 
+//    public String getBrowserText() {
+//        return browserText;
+//    }
+    
+    // Show DBpedia Iri fragment as title
     public String getBrowserText() {
-        return browserText;
+        if(this.getName().startsWith("http://dbpedia.org/ontology/")) {
+            String[] iri = this.getName().split("/");
+            return iri[iri.length - 1];
+        } else {
+            return browserText;
+        }
     }
 
     public void setBrowserText(String browserText) {

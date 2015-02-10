@@ -40,10 +40,7 @@ import java.util.logging.Logger;
 public class MediaWikiLogin  extends LoginUtil {
     private static final Logger log = Logger.getLogger(MediaWikiLogin.class.getName());
 
-//    private static final String wiki_host = "http://localhost/mediawiki";
-//    private static final String wiki_host = "http://160.45.114.250/mediawiki";
-    private static final String wiki_host = "http://de.dbpedia.org/mappingswiki";
-//    private static final String wiki_host = "http://dbpedia.imp.fu-berlin.de:49173/mappingswiki";
+    private static final String wiki_host = "http://160.45.114.250/mediawiki";
 
     private class MediaWikiData {
         public String cookie_prefix;
@@ -216,7 +213,9 @@ public class MediaWikiLogin  extends LoginUtil {
                     JSONObject json_obj = json.isObject();
                     JSONObject json_login = json_obj.get("login").isObject();
 
+                    // mind. MW 1.19.16
                     String token = json_login.get("token").isString().stringValue();
+                    // MW 1.16alpha
 //                    String token = json_login.get("lgtoken").isString().stringValue();
                     String cookie_prefix = json_login.get("cookieprefix").toString();
                     String session_id = json_login.get("sessionid").toString();
@@ -224,7 +223,6 @@ public class MediaWikiLogin  extends LoginUtil {
                     confirm_login(user, pass, token, cookie_prefix, session_id, callback);
 
                 } else {
-//                    callback.onFailure("NOT 200");
                     log.info("FAILURE");
                 }
             }
