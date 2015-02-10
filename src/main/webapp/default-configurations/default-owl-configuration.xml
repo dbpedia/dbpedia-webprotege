@@ -38,7 +38,7 @@
                     <width>0.20</width>
                     <portlets>
                         <portlet>
-                            <name>fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet</name>
+                            <name>fu.berlin.csw.dbpedia.client.ui.portlet.DBPediaPortlet</name>
                             <height>400</height>
                             <width>0</width>
                             <index>0</index>
@@ -101,7 +101,7 @@
                     <width>0.20</width>
                     <portlets>
                         <portlet>
-                            <name>fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet</name>
+                            <name>fu.berlin.csw.dbpedia.client.ui.portlet.DBPediaPortlet</name>
                             <height>400</height>
                             <width>0</width>
                             <index>0</index>
