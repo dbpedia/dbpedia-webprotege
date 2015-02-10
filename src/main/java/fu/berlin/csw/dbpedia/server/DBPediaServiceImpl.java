@@ -1,24 +1,13 @@
-package fu.berlin.csw.server.DBPediaApp;
+package fu.berlin.csw.dbpedia.server;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.logging.Logger;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.dom.DOMSource;
-
-import edu.stanford.bmir.protege.web.server.logging.DefaultLogger;
-import edu.stanford.bmir.protege.web.server.logging.WebProtegeLogger;
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
+import fu.berlin.csw.server.DBPediaApp.ProjectChangeXMLBuilder;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -56,13 +45,20 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 	private static final long serialVersionUID = 1L;
 
     private static final String REST_URI  = "160.45.114.250";
+//    private static final String REST_URI  = "localhost";
+//    private static final String REST_URI  = "de.dbpedia.org";
     private static final String REST_HOST = "http://160.45.114.250:8080/dpw/webprotege";
+//    private static final String REST_HOST = "http://localhost:8080/dpw/webprotege";
+
+    Logger logger = Logger.getLogger(DBPediaServiceImpl.class.getName());
 
 	private Set<ProjectChangeXMLBuilder> projectChangeXMLBuilders;
+    private Map<String, String> renameClasses;
 	private Message message;
 
 	public DBPediaServiceImpl() {
 		projectChangeXMLBuilders = new HashSet<ProjectChangeXMLBuilder>();
+        renameClasses = new HashMap<>();
 
 	}
 
@@ -91,6 +87,8 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 			HttpPost post = new HttpPost(REST_HOST);
             HttpClientContext context = HttpClientContext.create();
 
+            logger.info("[DBPediaServiceImpl] Token" + token);
+            
             BasicClientCookie token_cookie = new BasicClientCookie("token", token);
             token_cookie.setDomain(REST_URI);
             BasicClientCookie session_name_cookie = new BasicClientCookie("session_name", session_name);
@@ -127,7 +125,6 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 					reqEntity.setContentType("application/xml");
 					reqEntity.setChunked(false);
 
-
 					post.setEntity(reqEntity);
 
 					HttpResponse response = client.execute(post, context);
@@ -150,6 +147,7 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 						success = true;
 						message.setMessage("commit success");
 					} else {
+                        logger.info(IOUtils.toString(response.getEntity().getContent(), "UTF-8"));
                         message.setMessage("commit failure: " + response.getEntity().getContent());
                     }
 
@@ -157,11 +155,25 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
 				}
 			}
+//            HttpPost rename_post = new HttpPost(REST_HOST + "/rename");
+            
+//            for(Map.Entry<String, String> entry : renameClasses.entrySet()) {
+//                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+//                nameValuePairs.add(new BasicNameValuePair("oldName", entry.getKey()));
+//                nameValuePairs.add(new BasicNameValuePair("newName", entry.getValue()));
+//                rename_post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//                HttpResponse response = client.execute(rename_post, context);
+//                HttpEntity resEntity = response.getEntity();
+//                EntityUtils.consume(resEntity);
+//            }
+//
+            renameClasses.clear();
 
 			return message;
 
 		} catch (Exception e) {
 			message.setMessage(e.getMessage());
+            e.printStackTrace();
 			return message;
 		}
 
@@ -215,6 +227,15 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 		}
 
 	}
+    
+    @Override
+    public void postRenameEvent(ProjectId projectId, DBpediaRenameEvent event) {
+        if (projectId.equals(event.getProjectId())) {
+            logger.info("[DBPediaServiceImpl] " + event);
+            renameClasses.put(event.getOldClassIRI(), event.getNewClassIRI());
+        }
+        
+    }
 
 	static String convertStreamToString(java.io.InputStream is) {
 		java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");

@@ -1,7 +1,6 @@
-package fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet;
+package fu.berlin.csw.dbpedia.client.ui.portlet;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -12,6 +11,7 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import edu.stanford.bmir.protege.web.client.ui.library.entitylabel.EntityLabel;
 import edu.stanford.bmir.protege.web.client.ui.library.timelabel.ElapsedTimeLabel;
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
+import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaItemDisplay;
 
 import java.util.Set;
 
@@ -22,7 +22,7 @@ import java.util.Set;
  * Date: 26/03/2013
  */
 public class CommitChangesEventPanel extends Composite implements
-		DBPediaItemDisplay {
+        DBPediaItemDisplay {
 
 	@UiField
 	protected InlineLabel userNameLabel;

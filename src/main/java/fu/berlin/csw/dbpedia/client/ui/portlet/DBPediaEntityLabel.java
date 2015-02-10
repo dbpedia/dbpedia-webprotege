@@ -1,4 +1,4 @@
-package fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet;
+package fu.berlin.csw.dbpedia.client.ui.portlet;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

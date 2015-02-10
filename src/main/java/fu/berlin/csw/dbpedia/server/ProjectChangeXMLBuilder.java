@@ -1,4 +1,4 @@
-package fu.berlin.csw.server.DBPediaApp;
+package fu.berlin.csw.dbpedia.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

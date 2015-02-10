@@ -1,4 +1,4 @@
-package fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet;
+package fu.berlin.csw.dbpedia.client.ui.portlet;
 
 import java.io.Serializable;
 

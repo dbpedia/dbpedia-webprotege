@@ -1,26 +1,21 @@
-package edu.stanford.bmir.protege.web.client.ui.login;
+package fu.berlin.csw.dbpedia.client.ui.login;
 
 import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.*;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.*;
-import com.gwtext.client.widgets.MessageBox.AlertCallback;
-import com.gwtext.client.widgets.MessageBox.ConfirmCallback;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.event.PanelListenerAdapter;
 import com.gwtext.client.widgets.event.WindowListenerAdapter;
 import com.gwtext.client.widgets.layout.AnchorLayoutData;
 import com.gwtext.client.widgets.layout.FitLayout;
@@ -28,15 +23,15 @@ import edu.stanford.bmir.protege.web.client.Application;
 import edu.stanford.bmir.protege.web.client.rpc.*;
 import edu.stanford.bmir.protege.web.client.rpc.data.LoginChallengeData;
 import edu.stanford.bmir.protege.web.client.rpc.data.UserData;
+import edu.stanford.bmir.protege.web.client.ui.login.HashAlgorithm;
+import edu.stanford.bmir.protege.web.client.ui.login.LoginUtil;
 import edu.stanford.bmir.protege.web.client.ui.login.constants.AuthenticationConstants;
 import edu.stanford.bmir.protege.web.client.ui.openid.OpenIdIconPanel;
 import edu.stanford.bmir.protege.web.client.ui.openid.OpenIdUtil;
-import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
 import edu.stanford.bmir.protege.web.shared.app.WebProtegePropertyName;
-import edu.stanford.bmir.protege.web.shared.user.UnrecognizedUserNameException;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
+import fu.berlin.csw.dbpedia.client.rpc.MediawikiServiceManager;
 
-import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -46,7 +41,9 @@ public class MediaWikiLogin  extends LoginUtil {
     private static final Logger log = Logger.getLogger(MediaWikiLogin.class.getName());
 
 //    private static final String wiki_host = "http://localhost/mediawiki";
-    private static final String wiki_host = "http://160.45.114.250/mediawiki";
+//    private static final String wiki_host = "http://160.45.114.250/mediawiki";
+    private static final String wiki_host = "http://de.dbpedia.org/mappingswiki";
+//    private static final String wiki_host = "http://dbpedia.imp.fu-berlin.de:49173/mappingswiki";
 
     private class MediaWikiData {
         public String cookie_prefix;
@@ -220,6 +217,7 @@ public class MediaWikiLogin  extends LoginUtil {
                     JSONObject json_login = json_obj.get("login").isObject();
 
                     String token = json_login.get("token").isString().stringValue();
+//                    String token = json_login.get("lgtoken").isString().stringValue();
                     String cookie_prefix = json_login.get("cookieprefix").toString();
                     String session_id = json_login.get("sessionid").toString();
 
@@ -241,11 +239,13 @@ public class MediaWikiLogin  extends LoginUtil {
             builder.send();
         } catch (RequestException e) {
             // Couldn't connect to server
+            GWT.log("[api login] Request Exception");
             log.info("REQUEST EXEPTION:" + e.getMessage());
         }
     }
 
     public void confirm_login(final String user, String pass, String token, final String cookie_prefix, final String session_id, final Callback<MediaWikiData, String> callback) {
+        GWT.log("[confirm login] Calling");
         String url = wiki_host + "/api.php?action=login&lgname="
                 + user
                 + "&lgpassword="

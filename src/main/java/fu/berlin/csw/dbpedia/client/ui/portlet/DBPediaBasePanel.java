@@ -1,6 +1,7 @@
-package fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet;
+package fu.berlin.csw.dbpedia.client.ui.portlet;
 
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,9 +20,12 @@ import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
 import edu.stanford.bmir.protege.web.shared.event.HasEventHandlerManagement;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedEvent;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedHandler;
+import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.Message;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEventHandler;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.revision.RevisionNumber;
-import fu.berlin.csw.DBPediaApp.client.rpc.DBPediaService;
+import fu.berlin.csw.dbpedia.client.rpc.DBPediaService;
 import fu.berlin.csw.DBPediaApp.client.rpc.DBPediaServiceAsync;
 
 /**
@@ -76,7 +80,6 @@ public class DBPediaBasePanel extends Composite {
 				
 				while (it.hasNext()){
 					CommitChangesEventPanel wg = (CommitChangesEventPanel) it.next();
-					wg.setCommitted();
 				}
                 UIUtil.hideLoadProgessBar();
 				Window.alert(message);
@@ -118,6 +121,15 @@ public class DBPediaBasePanel extends Composite {
 						}
 					}
 				});
+        
+        eventHandlerMan.addProjectEventHandler(DBpediaRenameEvent.TYPE, new DBpediaRenameEventHandler() {
+            Logger logger = Logger.getLogger(DBPediaBasePanel.class.getName());
+            @Override
+            public void rename_class(DBpediaRenameEvent event) {
+                logger.info("[DBPediaBasePanel] Handling Rename Event -  " + event);
+                proxy.postRenameEvent(projectId, event, callbackVoid);
+            }
+        });
 
 		initWidget(uiBinder.createAndBindUi(this));
 

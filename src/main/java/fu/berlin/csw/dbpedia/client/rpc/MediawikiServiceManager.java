@@ -1,4 +1,4 @@
-package edu.stanford.bmir.protege.web.client.rpc;
+package fu.berlin.csw.dbpedia.client.rpc;
 
 
 import com.google.gwt.core.client.GWT;
@@ -11,6 +11,7 @@ import edu.stanford.bmir.protege.web.shared.user.UnrecognizedUserNameException;
 import edu.stanford.bmir.protege.web.shared.user.UserEmailAlreadyExistsException;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
 import edu.stanford.bmir.protege.web.shared.user.UserNameAlreadyExistsException;
+import fu.berlin.csw.DBPediaApp.client.rpc.MediawikiServiceAsync;
 
 /**
  * Created by peterr on 11.09.14.

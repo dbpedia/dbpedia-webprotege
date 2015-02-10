@@ -1,6 +1,7 @@
-package fu.berlin.csw.DBPediaApp.client.rpc;
+package fu.berlin.csw.dbpedia.client.rpc;
 
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedEvent;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -19,6 +20,7 @@ public interface DBPediaService extends RemoteService {
 			ProjectId input);
 
 	void postChangeEvent(ProjectId input, ProjectChangedEvent event);
+    void postRenameEvent(ProjectId input, DBpediaRenameEvent event);
 
 	void init(ProjectId input);
 }

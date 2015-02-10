@@ -1,26 +1,18 @@
-package edu.stanford.bmir.protege.web.server;
+package fu.berlin.csw.dbpedia.server;
 
-import edu.stanford.bmir.protege.web.client.rpc.MediawikiService;
-import edu.stanford.bmir.protege.web.client.rpc.data.LoginChallengeData;
+import edu.stanford.bmir.protege.web.server.AdminServiceImpl;
+import edu.stanford.bmir.protege.web.server.MetaProjectManager;
+import fu.berlin.csw.DBPediaApp.client.rpc.MediawikiService;
 import edu.stanford.bmir.protege.web.client.rpc.data.UserData;
 import edu.stanford.bmir.protege.web.client.ui.login.constants.AuthenticationConstants;
-import edu.stanford.bmir.protege.web.client.ui.openid.OpenIdUtil;
-import edu.stanford.bmir.protege.web.client.ui.openid.constants.OpenIdConstants;
 import edu.stanford.bmir.protege.web.server.logging.DefaultLogger;
 import edu.stanford.bmir.protege.web.server.logging.WebProtegeLogger;
 import edu.stanford.bmir.protege.web.server.owlapi.OWLAPIMetaProjectStore;
-import edu.stanford.bmir.protege.web.shared.user.UnrecognizedUserNameException;
-import edu.stanford.bmir.protege.web.shared.user.UserId;
 import edu.stanford.bmir.protege.web.shared.user.UserNameAlreadyExistsException;
-import edu.stanford.smi.protege.server.metaproject.MetaProject;
 import edu.stanford.smi.protege.server.metaproject.User;
-import edu.stanford.smi.protege.server.metaproject.impl.UserImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.math.BigInteger;
-import java.sql.*;
-import java.util.Random;
 
 /**
  * Created by peterr on 12.09.14.
@@ -42,6 +34,7 @@ public class MediawikiServiceImpl extends AdminServiceImpl implements MediawikiS
         user.removePropertyValue(userName + "_session_prefix", user.getPropertyValue(userName + "_session_prefix"));
         user.removePropertyValue(userName + "_session_cookie", user.getPropertyValue(userName + "_session_cookie"));
         user.removePropertyValue(userName + "_token", user.getPropertyValue(userName + "_token"));
+        logger.info("[setSessionValues] Edit Token" + edit_token);
         user.setPropertyValue(userName + "_token", edit_token);
         user.setPropertyValue(userName + "_session_prefix", cookie_prefix);
         user.setPropertyValue(userName + "_session_cookie", session_id);

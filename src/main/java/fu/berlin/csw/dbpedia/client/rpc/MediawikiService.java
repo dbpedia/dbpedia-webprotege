@@ -1,4 +1,4 @@
-package edu.stanford.bmir.protege.web.client.rpc;
+package fu.berlin.csw.dbpedia.client.rpc;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

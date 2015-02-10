@@ -1,13 +1,12 @@
-package fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet;
+package fu.berlin.csw.dbpedia.client.ui.portlet;
 
 import java.util.Collection;
 import java.util.Collections;
 
-import com.google.gwt.user.client.Window;
-
 import edu.stanford.bmir.protege.web.client.project.Project;
 import edu.stanford.bmir.protege.web.client.rpc.data.EntityData;
 import edu.stanford.bmir.protege.web.client.ui.portlet.AbstractOWLEntityPortlet;
+import fu.berlin.csw.dbpedia.client.ui.portlet.DBPediaBasePanel;
 
 /**
  * Author: Matthew Horridge<br>

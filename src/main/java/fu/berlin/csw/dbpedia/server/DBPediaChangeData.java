@@ -1,4 +1,4 @@
-package fu.berlin.csw.server.DBPediaApp;
+package fu.berlin.csw.dbpedia.server;
 
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
