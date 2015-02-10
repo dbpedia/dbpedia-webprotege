@@ -25,6 +25,7 @@
 
     <inherits name="edu.stanford.bmir.gwtcodemirror.CodeMirror"/>
 
-	<entry-point class="edu.stanford.bmir.protege.web.client.Authenticate"/> 
+    <inherits name="fu.berlin.csw.DBpedia" />
+	<entry-point class="edu.stanford.bmir.protege.web.client.Authenticate"/>
     
 </module>
