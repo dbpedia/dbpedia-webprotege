@@ -11,10 +11,6 @@
 	<source path="shared" />
     <source path="resources"/>
 
-	<inherits name='fu.berlin.csw.DBPediaApp.client.rpc.DBPediaRPC' />
-	<inherits
-		name='fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaPortlet' />
-
 	<inherits name='com.google.gwt.junit.JUnit' />
     <inherits name="com.google.gwt.logging.Logging" />
     <set-property name="gwt.logging.logLevel" value="INFO"/>
@@ -41,6 +37,7 @@
 
 
 	<inherits name='com.gwtext.GwtExt' />
+    <inherits name="fu.berlin.csw.DBpedia" />
 
 	<!--<generate-with class="edu.stanford.bmir.protege.web.server.generated.UIFactoryGenerator"> -->
 	<!--<when-type-assignable class="edu.stanford.bmir.protege.web.client.ui.generated.PluginFactory"/> -->
