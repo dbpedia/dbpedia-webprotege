@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
-import fu.berlin.csw.server.DBPediaApp.ProjectChangeXMLBuilder;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -28,8 +28,8 @@ import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
 import edu.stanford.smi.protege.server.metaproject.MetaProject;
 import edu.stanford.smi.protege.server.metaproject.User;
-import fu.berlin.csw.DBPediaApp.client.rpc.DBPediaService;
-import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.Message;
+import fu.berlin.csw.dbpedia.client.rpc.DBPediaService;
+import fu.berlin.csw.dbpedia.client.ui.portlet.Message;
 
 /**
  * Author: Lars Parmakerli<br>

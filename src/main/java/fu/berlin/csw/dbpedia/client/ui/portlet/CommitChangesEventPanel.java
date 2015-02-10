@@ -11,7 +11,6 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import edu.stanford.bmir.protege.web.client.ui.library.entitylabel.EntityLabel;
 import edu.stanford.bmir.protege.web.client.ui.library.timelabel.ElapsedTimeLabel;
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
-import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.DBPediaItemDisplay;
 
 import java.util.Set;
 

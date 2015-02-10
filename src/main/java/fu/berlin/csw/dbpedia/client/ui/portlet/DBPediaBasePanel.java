@@ -20,13 +20,12 @@ import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
 import edu.stanford.bmir.protege.web.shared.event.HasEventHandlerManagement;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedEvent;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedHandler;
-import fu.berlin.csw.DBPediaApp.client.ui.DBPediaPortlet.Message;
-import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
-import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEventHandler;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.revision.RevisionNumber;
 import fu.berlin.csw.dbpedia.client.rpc.DBPediaService;
-import fu.berlin.csw.DBPediaApp.client.rpc.DBPediaServiceAsync;
+import fu.berlin.csw.dbpedia.client.rpc.DBPediaServiceAsync;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEventHandler;
 
 /**
  * Author: Lars Parmakerli<br>

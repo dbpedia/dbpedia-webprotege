@@ -2,7 +2,7 @@ package fu.berlin.csw.dbpedia.server;
 
 import edu.stanford.bmir.protege.web.server.AdminServiceImpl;
 import edu.stanford.bmir.protege.web.server.MetaProjectManager;
-import fu.berlin.csw.DBPediaApp.client.rpc.MediawikiService;
+import fu.berlin.csw.dbpedia.client.rpc.MediawikiService;
 import edu.stanford.bmir.protege.web.client.rpc.data.UserData;
 import edu.stanford.bmir.protege.web.client.ui.login.constants.AuthenticationConstants;
 import edu.stanford.bmir.protege.web.server.logging.DefaultLogger;
