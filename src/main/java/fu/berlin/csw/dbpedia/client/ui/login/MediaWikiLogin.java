@@ -40,7 +40,7 @@ import java.util.logging.Logger;
 public class MediaWikiLogin  extends LoginUtil {
     private static final Logger log = Logger.getLogger(MediaWikiLogin.class.getName());
 
-    private static final String wiki_host = "http://160.45.114.250/mediawiki";
+    private static final String wiki_host = Application.get().getClientApplicationProperty(WebProtegePropertyName.DBPEDIA_WIKIHOST, "");
 
     private class MediaWikiData {
         public String cookie_prefix;

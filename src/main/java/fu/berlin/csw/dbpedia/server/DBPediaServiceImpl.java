@@ -3,9 +3,12 @@ package fu.berlin.csw.dbpedia.server;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
 
+import edu.stanford.bmir.protege.web.server.URLUtil;
+import edu.stanford.bmir.protege.web.server.app.WebProtegeProperties;
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
 import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
 import org.apache.commons.io.IOUtils;
@@ -44,11 +47,7 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
 	private static final long serialVersionUID = 1L;
 
-    private static final String REST_URI  = "160.45.114.250";
-//    private static final String REST_URI  = "localhost";
-//    private static final String REST_URI  = "de.dbpedia.org";
-    private static final String REST_HOST = "http://160.45.114.250:8080/dpw/webprotege";
-//    private static final String REST_HOST = "http://localhost:8080/dpw/webprotege";
+    private static final String REST_URI = WebProtegeProperties.get().getDBpediaDpw();
 
     Logger logger = Logger.getLogger(DBPediaServiceImpl.class.getName());
 
@@ -84,17 +83,19 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
 			HttpClient client = new DefaultHttpClient();
 
-			HttpPost post = new HttpPost(REST_HOST);
+			HttpPost post = new HttpPost(REST_URI);
             HttpClientContext context = HttpClientContext.create();
 
             logger.info("[DBPediaServiceImpl] Token" + token);
+
+            String rest_host = new URL(REST_URI).getHost();
             
             BasicClientCookie token_cookie = new BasicClientCookie("token", token);
-            token_cookie.setDomain(REST_URI);
+            token_cookie.setDomain(rest_host);
             BasicClientCookie session_name_cookie = new BasicClientCookie("session_name", session_name);
-            session_name_cookie.setDomain(REST_URI);
+            session_name_cookie.setDomain(rest_host);
             BasicClientCookie session_id_cookie = new BasicClientCookie("session_id", session_id);
-            session_id_cookie.setDomain(REST_URI);
+            session_id_cookie.setDomain(rest_host);
             CookieStore cookieStore = new BasicCookieStore();
 
             cookieStore.addCookie(token_cookie);

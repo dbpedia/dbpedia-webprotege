@@ -162,6 +162,12 @@ public class WebProtegeProperties implements Serializable {
         return getOptionalString(MONGO_DB_HOST);
     }
 
+    public String getDBpediaWikiHost() {
+        return getRequiredString(DBPEDIA_WIKIHOST);
+    }
+    public String getDBpediaDpw() {
+        return getRequiredString(DBPEDIA_DPW);
+    }
 
 
 
