@@ -202,6 +202,7 @@ public class MediaWikiLogin  extends LoginUtil {
     public void api_login(final String user, final String pass, final Callback<MediaWikiData, String> callback) {
         String url = wiki_host + "/api.php?action=login&lgname=" + user + "&lgpassword=" + pass + "&format=json";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, URL.encode(url));
+        // send cookies
         builder.setIncludeCredentials(true);
 
         builder.setCallback(new RequestCallback() {
@@ -240,6 +241,40 @@ public class MediaWikiLogin  extends LoginUtil {
             GWT.log("[api login] Request Exception");
             log.info("REQUEST EXEPTION:" + e.getMessage());
         }
+    }
+
+    public static void api_logout() {
+        String url = wiki_host + "/api.php?action=logout&format=xml";
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
+
+        // send cookies
+        builder.setIncludeCredentials(true);
+        builder.setCallback(new RequestCallback() {
+
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                if (response.getStatusCode() == 200) {
+                    JSONValue json = JSONParser.parseStrict(response.getText());
+                    log.info("Success: Logout successful.");
+
+                } else {
+                    log.info("Failure: During logout.");
+                }
+            }
+
+            @Override
+            public void onError(Request request, Throwable exception) {
+            }
+        });
+
+        try {
+            builder.send();
+        } catch (RequestException e) {
+            // Couldn't connect to server
+            GWT.log("[api login] Request Exception");
+            log.info("REQUEST EXEPTION:" + e.getMessage());
+        }
+
     }
 
     public void confirm_login(final String user, String pass, String token, final String cookie_prefix, final String session_id, final Callback<MediaWikiData, String> callback) {
@@ -283,13 +318,14 @@ public class MediaWikiLogin  extends LoginUtil {
             }
         });
 
+        // send cookies
         builder.setIncludeCredentials(true);
 
         try {
             builder.send();
         } catch (RequestException e) {
             // Couldn't connect to server
-            callback.onFailure("FAILURE in confirm login: " + e.getMessage());
+            callback.onFailure("Failure: in confirm_login() method: " + e.getMessage());
         }
 
     }
@@ -330,6 +366,7 @@ public class MediaWikiLogin  extends LoginUtil {
             }
         });
 
+        // send cookies
         builder.setIncludeCredentials(true);
 
         try {

@@ -23,6 +23,7 @@ import edu.stanford.bmir.protege.web.shared.event.EventBusManager;
 import edu.stanford.bmir.protege.web.shared.permissions.GroupId;
 import edu.stanford.bmir.protege.web.shared.user.UserDetails;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
+import fu.berlin.csw.dbpedia.client.ui.login.MediaWikiLogin;
 
 import java.util.*;
 
@@ -93,6 +94,8 @@ public class LoggedInUserManager {
         if(userId.isGuest()) {
             return;
         }
+        MediaWikiLogin.api_logout();
+
         AdminServiceManager.getInstance().logout(new AsyncCallback<Void>() {
             public void onFailure(Throwable caught) {
                 MessageBox.alert(AuthenticationConstants.ASYNCHRONOUS_CALL_FAILURE_MESSAGE);
