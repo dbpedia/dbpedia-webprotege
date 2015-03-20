@@ -61,11 +61,14 @@ public enum WebProtegePropertyName {
     @WebProtegePropertiesDocumentation(description = "Specifies whether or not users should be allowed to sign up for accounts", example = "false")
     USER_ACCOUNT_CREATION_ENABLED("user.account.creation.enabled", PropertyValue.ofBoolean(true), ClientVisibility.VISIBLE),
 
-    @WebProtegePropertiesDocumentation(description = "The name of the WebProtégé application that appears in the browser title bar", example = "WebProtege")
-    DBPEDIA_WIKIHOST("dbpedia.wikihost", PropertyValue.ofString("WebProt\u00E9g\u00E9"), ClientVisibility.VISIBLE),
+    @WebProtegePropertiesDocumentation(description = "Mediawiki Host of mappings wiki.", example = "de.dbpedia.org/mappingswiki")
+    DBPEDIA_WIKIHOST("dbpedia.wikihost", PropertyValue.ofString("localhost"), ClientVisibility.VISIBLE),
 
-    @WebProtegePropertiesDocumentation(description = "The version of the WebProtégé application", example = "2.5.0")
-    DBPEDIA_DPW("dbpedia.dpw", ClientVisibility.VISIBLE);
+    @WebProtegePropertiesDocumentation(description = "Bridge Server Uri for communication", example = "de.dbpedia.org/dpw")
+    DBPEDIA_DPW("dbpedia.dpw", ClientVisibility.VISIBLE),
+
+    @WebProtegePropertiesDocumentation(description = "Mediawiki version", example = "16")
+    MEDIAWIKI_VERSION("mediawiki.version", PropertyValue.ofInteger(19), ClientVisibility.VISIBLE);
 
 
     private static class PropertyValue {
