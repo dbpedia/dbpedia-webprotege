@@ -89,7 +89,7 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
             logger.info("[DBPediaServiceImpl] Token" + token);
 
             String rest_host = new URL(REST_URI).getHost();
-            
+
             BasicClientCookie token_cookie = new BasicClientCookie("token", token);
             token_cookie.setDomain(rest_host);
             BasicClientCookie session_name_cookie = new BasicClientCookie("session_name", session_name);
@@ -148,7 +148,6 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 						success = true;
 						message.setMessage("commit success");
 					} else {
-                        logger.info(IOUtils.toString(response.getEntity().getContent(), "UTF-8"));
                         message.setMessage("commit failure: " + response.getEntity().getContent());
                     }
 
