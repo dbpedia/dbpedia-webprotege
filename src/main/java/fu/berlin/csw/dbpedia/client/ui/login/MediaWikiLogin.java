@@ -30,6 +30,7 @@ import edu.stanford.bmir.protege.web.client.ui.openid.OpenIdIconPanel;
 import edu.stanford.bmir.protege.web.client.ui.openid.OpenIdUtil;
 import edu.stanford.bmir.protege.web.shared.app.WebProtegePropertyName;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
+import edu.stanford.smi.protege.server.metaproject.User;
 import fu.berlin.csw.dbpedia.client.rpc.MediawikiServiceManager;
 
 import java.util.logging.Logger;
@@ -195,7 +196,9 @@ public class MediaWikiLogin  extends LoginUtil {
 //            performSignInUsingHttps(userNameField.getText(), passwordField, win);
 //        }
         else {
-            performSignInUsingEncryption(UserId.getUserId(userNameField.getText()), passwordField, win);
+
+            String userName = Character.toUpperCase(userNameField.getText().charAt(0)) + userNameField.getText().substring(1);
+            performSignInUsingEncryption(UserId.getUserId(userName), passwordField, win);
         }
     }
 
@@ -213,11 +216,18 @@ public class MediaWikiLogin  extends LoginUtil {
                     JSONValue json = JSONParser.parseStrict(response.getText());
                     JSONObject json_obj = json.isObject();
                     JSONObject json_login = json_obj.get("login").isObject();
+                    
+                    int wiki_version = Application.get().getClientApplicationProperty(WebProtegePropertyName.MEDIAWIKI_VERSION, 19);
 
-                    // mind. MW 1.19.16
-                    String token = json_login.get("token").isString().stringValue();
-                    // MW 1.16alpha
-//                    String token = json_login.get("lgtoken").isString().stringValue();
+                    String token = null;
+                    if(wiki_version >= 19) {
+                        // mind. MW 1.19.16
+                        token = json_login.get("token").isString().stringValue();
+                    } else {
+                      // MW 1.16alpha
+                        token = json_login.get("lgtoken").isString().stringValue();
+
+                    }
                     String cookie_prefix = json_login.get("cookieprefix").toString();
                     String session_id = json_login.get("sessionid").toString();
 
@@ -376,7 +386,7 @@ public class MediaWikiLogin  extends LoginUtil {
         }
     }
     private void performSignInUsingEncryption(final UserId userName, final TextBox passField, final Window win) {
-        final String user = Character.toUpperCase(userName.getUserName().charAt(0)) + userName.getUserName().substring(1);
+        final String user = userName.getUserName();
 
         final Callback<MediaWikiData, String> wiki_call = new Callback<MediaWikiData, String>() {
             @Override
@@ -388,6 +398,30 @@ public class MediaWikiLogin  extends LoginUtil {
             public void onSuccess(MediaWikiData result) {
                 MediawikiServiceManager.getInstance().getUserSaltAndChallenge(userName, new GetSaltAndChallengeForLoginHandler(userName, passField, win, result.edit_token, result.cookie_prefix, result.session_id ));
 
+            }
+        };
+        final Callback<MediaWikiData, String> wiki_reg = new Callback<MediaWikiData, String>() {
+            @Override
+            public void onFailure(String reason) {
+                MessageBox.alert(reason);
+            }
+
+            @Override
+            public void onSuccess(final MediaWikiData result) {
+                MediawikiServiceManager.getInstance().getNewSalt(new AsyncCallback<String>() {
+
+                    public void onSuccess(String salt) {
+                        log.info("[MediaWikiLogin] Create new Account.");
+                        HashAlgorithm hAlgorithm = new HashAlgorithm();
+                        String saltedHashedPass = hAlgorithm.md5(salt + passField.getText());
+                        MediawikiServiceManager.getInstance().registerUserViaEncrption(user, saltedHashedPass, user + "@dbpedia.org", new CreateNewUserViaEncryptHandler(win));
+                    }
+
+                    public void onFailure(Throwable caught) {
+                        log.info("[MediaWikiLogin] Does not create Account.");
+                        MessageBox.alert(AuthenticationConstants.ASYNCHRONOUS_CALL_FAILURE_MESSAGE);
+                    }
+                });
             }
         };
 
@@ -407,27 +441,16 @@ public class MediaWikiLogin  extends LoginUtil {
 
                         public void execute(final String btnID) {
                             if (btnID.equalsIgnoreCase("yes")) {
-                                log.info("Create new Account.");
-                                MediawikiServiceManager.getInstance().getNewSalt(new AsyncCallback<String>() {
-
-                                    public void onSuccess(String salt) {
-                                        HashAlgorithm hAlgorithm = new HashAlgorithm();
-                                        String saltedHashedPass = hAlgorithm.md5(salt + passField.getText());
-                                        MediawikiServiceManager.getInstance().registerUserViaEncrption(user, saltedHashedPass, user + "@dbpedia.org", new CreateNewUserViaEncryptHandler(win));
-                                    }
-
-                                    public void onFailure(Throwable caught) {
-                                        MessageBox.alert(AuthenticationConstants.ASYNCHRONOUS_CALL_FAILURE_MESSAGE);
-                                    }
-                                });
-                                api_login(user, passField.getText(), wiki_call);
+                                // TODO erst User registrieren, wenn auch wirklich Wiki user :)
+                                // user registrieren
+                                api_login(user, passField.getText(), wiki_reg);
                             } else {
-                                log.info("Does not create Account.");
+                                log.info("[MediaWikiLogin] Failure: Does not create Account.");
                             }
                         }
                     });
                 } else {
-                    log.info("USER EXISTS.");
+                    log.info("[MediaWikiLogin] User already exists. Perform login.");
                     api_login(user, passField.getText(), wiki_call);
                 }
 
