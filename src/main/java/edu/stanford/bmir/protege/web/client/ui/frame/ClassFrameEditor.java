@@ -225,16 +225,17 @@ public class ClassFrameEditor extends SimplePanel implements ClassFrameEditorPre
 
     @UiHandler("displayNameField")
     protected void handleDisplayNameChange(ValueChangeEvent<String> evt) {
-        UIUtil.showLoadProgessBar("Renaming Class", "Loading");
         String[] iriSplit = iriField.getValue().split("/");
         EventBusManager.getManager().postEvent(new DBpediaRenameEvent(iriField.getValue(),
                                                "http://dbpedia.org/ontology/" + evt.getValue(), projectId));
+
         iriField.setValue(this.getValue().get().getFrame().getSubject().getIRI().toString());
 
         setDirty(true, EventStrategy.FIRE_EVENTS);
         if(isWellFormed()) {
             ValueChangeEvent.fire(this, getValue());
         }
+        iriField.setText("http://dbpedia.org/ontology/" + evt.getValue());
     }
 
     // TODO update IRI field immediately
