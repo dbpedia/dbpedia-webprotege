@@ -184,6 +184,7 @@ public class UIFactory {
             }
             else if(portletJavaClassName.endsWith(DBPediaPortlet.class.getName())) {
                 return new DBPediaPortlet(project);
+            }
             else {
                 GWT.log("Portlet not found: " + portletJavaClassName);
             }
