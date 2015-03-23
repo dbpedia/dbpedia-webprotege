@@ -442,10 +442,10 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <data.directory>data/webprotege</data.directory>
+                <data.directory>${project.basedir}/data/webprotege</data.directory>
                 <application.host>localhost</application.host>
                 <dbpedia.dpw>http://160.45.114.250:8080/dpw/webprotege</dbpedia.dpw>
-                <dbpedia.wikihost>http://de.dbpedia.org/mappingswiki</dbpedia.wikihost>
+                <dbpedia.wikihost>de.dbpedia.org/mappingswiki</dbpedia.wikihost>
                 <!-- No admin email by default -->
                 <mediawiki.version>16</mediawiki.version>
                 <admin.email/>
