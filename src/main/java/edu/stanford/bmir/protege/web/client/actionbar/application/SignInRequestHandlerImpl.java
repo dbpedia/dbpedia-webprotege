@@ -34,34 +34,4 @@ public class SignInRequestHandlerImpl implements SignInRequestHandler {
             }
         });
     }
-
-
-    class ClearLoginAuthDataHandler extends AbstractAsyncHandler<Void> {
-
-        private final String athnUrl;
-
-        private final MediaWikiLogin loginUtil;
-
-        private final int randomNumber;
-
-        public ClearLoginAuthDataHandler(String athnUrl, MediaWikiLogin loginUtil, int randomNumber) {
-            this.athnUrl = athnUrl;
-            this.loginUtil = loginUtil;
-            this.randomNumber = randomNumber;
-        }
-
-        @Override
-        public void handleFailure(Throwable caught) {
-            MessageBox.alert(AuthenticationConstants.ASYNCHRONOUS_CALL_FAILURE_MESSAGE);
-        }
-
-        @Override
-        public void handleSuccess(Void result) {
-            loginUtil.openNewWindow(athnUrl, "390", "325", "0");
-            loginUtil.getTimeoutAndCheckUserLoggedInMethod(loginUtil, "" + randomNumber);
-        }
-
-    }
-=======
->>>>>>> master
 }
