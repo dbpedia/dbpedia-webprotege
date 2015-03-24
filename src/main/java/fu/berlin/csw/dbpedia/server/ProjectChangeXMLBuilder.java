@@ -23,6 +23,8 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import edu.stanford.bmir.protege.web.server.inject.WebProtegeInjector;
+import edu.stanford.bmir.protege.web.server.owlapi.OWLAPIProjectManager;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -37,7 +39,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import edu.stanford.bmir.protege.web.server.owlapi.OWLAPIProject;
-import edu.stanford.bmir.protege.web.server.owlapi.OWLAPIProjectManager;
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.revision.RevisionNumber;
@@ -121,8 +122,7 @@ public class ProjectChangeXMLBuilder {
 	public void buildXML(UserId currentUserId, User currentUser)
 			throws ParserConfigurationException {
 
-		OWLAPIProject project = OWLAPIProjectManager.getProjectManager()
-				.getProject(projectId);
+		OWLAPIProject project = WebProtegeInjector.get().getInstance(OWLAPIProjectManager.class).getProject(projectId);
 
 		docFactory = DocumentBuilderFactory.newInstance();
 

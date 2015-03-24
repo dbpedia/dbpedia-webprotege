@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import edu.stanford.bmir.protege.web.server.URLUtil;
 import edu.stanford.bmir.protege.web.server.app.WebProtegeProperties;
+import edu.stanford.bmir.protege.web.server.inject.WebProtegeInjector;
 import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
 import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
 import org.apache.commons.io.IOUtils;
@@ -24,7 +25,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 
-import edu.stanford.bmir.protege.web.server.MetaProjectManager;
 import edu.stanford.bmir.protege.web.server.WebProtegeRemoteServiceServlet;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedEvent;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
@@ -47,7 +47,7 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
 	private static final long serialVersionUID = 1L;
 
-    private static final String REST_URI = WebProtegeProperties.get().getDBpediaDpw();
+    private static final String REST_URI = WebProtegeInjector.get().getInstance(WebProtegeProperties.class).getDBpediaDpw();
 
     Logger logger = Logger.getLogger(DBPediaServiceImpl.class.getName());
 
@@ -67,8 +67,7 @@ public class DBPediaServiceImpl extends WebProtegeRemoteServiceServlet
 
 			UserId currentUserId = this.getUserInSession();
 
-			MetaProjectManager mpm = getMetaProjectManager();
-			MetaProject metaProject = mpm.getMetaProject();
+			MetaProject metaProject = WebProtegeInjector.get().getInstance(MetaProject.class);
 			User currentUser = metaProject.getUser(currentUserId.getUserName());
 
             String userName =  currentUser.getName();
