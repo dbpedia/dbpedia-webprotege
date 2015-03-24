@@ -9,5 +9,7 @@ public enum AuthenticationResponse {
 
     FAIL,
 
-    SUCCESS
+    SUCCESS,
+
+    UNKNOWN_USER
 }
