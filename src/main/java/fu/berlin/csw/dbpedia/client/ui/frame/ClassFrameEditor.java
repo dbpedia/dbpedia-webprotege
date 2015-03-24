@@ -1,4 +1,4 @@
-package edu.stanford.bmir.protege.web.client.ui.frame;
+package fu.berlin.csw.dbpedia.client.ui.frame;
 
 import com.google.common.base.Optional;
 import com.google.gwt.core.client.GWT;
@@ -13,14 +13,20 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import edu.stanford.bmir.protege.web.client.ui.editor.EditorView;
+import edu.stanford.bmir.protege.web.client.ui.frame.ClassFrameEditorPresenter;
+import edu.stanford.bmir.protege.web.client.ui.frame.LabelledFrame;
+import edu.stanford.bmir.protege.web.client.ui.frame.PropertyValueListEditor;
 import edu.stanford.bmir.protege.web.client.ui.library.common.EventStrategy;
 import edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle;
 import edu.stanford.bmir.protege.web.shared.DirtyChangedEvent;
 import edu.stanford.bmir.protege.web.shared.DirtyChangedHandler;
+import edu.stanford.bmir.protege.web.shared.event.EventBusManager;
 import edu.stanford.bmir.protege.web.shared.frame.ClassFrame;
 import edu.stanford.bmir.protege.web.shared.frame.PropertyValue;
 import edu.stanford.bmir.protege.web.shared.frame.PropertyValueList;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 
 import java.util.ArrayList;
@@ -84,8 +90,15 @@ public class ClassFrameEditor extends SimplePanel implements ClassFrameEditorPre
 //        currentClasses.clear();
 //        currentClasses.addAll(lcf.getFrame().getClasses());
 
-        String unquoted = removeQuotes(lcf.getDisplayName());
-        displayNameField.setValue(unquoted);
+        // Show the dbpedia Mappings wiki article title as display name
+        IRI iri = lcf.getFrame().getSubject().getIRI();
+
+        if(iri.getNamespace().equals("http://dbpedia.org/ontology/")) {
+             displayNameField.setValue(iri.getFragment());
+        } else {
+            String unquoted = removeQuotes(lcf.getDisplayName());
+            displayNameField.setValue(unquoted);
+        }
 
         iriField.setValue(lcf.getFrame().getSubject().getIRI().toString());
         annotations.setValue(new PropertyValueList(new ArrayList<PropertyValue>(lcf.getFrame().getAnnotationPropertyValues())));
@@ -213,7 +226,23 @@ public class ClassFrameEditor extends SimplePanel implements ClassFrameEditorPre
 
 
     @UiHandler("displayNameField")
-    protected void handeDisplayNameChange(ValueChangeEvent<String> evt) {
+    protected void handleDisplayNameChange(ValueChangeEvent<String> evt) {
+        String[] iriSplit = iriField.getValue().split("/");
+        EventBusManager.getManager().postEvent(new DBpediaRenameEvent(iriField.getValue(),
+                                               "http://dbpedia.org/ontology/" + evt.getValue(), projectId));
+
+        iriField.setValue(this.getValue().get().getFrame().getSubject().getIRI().toString());
+
+        setDirty(true, EventStrategy.FIRE_EVENTS);
+        if(isWellFormed()) {
+            ValueChangeEvent.fire(this, getValue());
+        }
+        iriField.setText("http://dbpedia.org/ontology/" + evt.getValue());
+    }
+
+    // TODO update IRI field immediately
+    @UiHandler("iriField")
+    protected void handleIriChange(ValueChangeEvent<String> evt) {
         setDirty(true, EventStrategy.FIRE_EVENTS);
     }
 
@@ -223,7 +252,7 @@ public class ClassFrameEditor extends SimplePanel implements ClassFrameEditorPre
             ValueChangeEvent.fire(this, getValue());
         }
     }
-
+    
     @UiHandler("annotations")
     protected void handleAnnotationsDirtyChanged(DirtyChangedEvent evt) {
         setDirty(true, EventStrategy.FIRE_EVENTS);
