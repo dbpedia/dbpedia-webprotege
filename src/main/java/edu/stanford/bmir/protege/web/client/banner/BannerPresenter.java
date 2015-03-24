@@ -4,6 +4,8 @@ import com.google.common.base.Optional;
 import com.google.gwt.core.client.GWT;
 import edu.stanford.bmir.protege.web.client.Application;
 import edu.stanford.bmir.protege.web.client.actionbar.application.*;
+import fu.berlin.csw.dbpedia.client.actionbar.application.SignInRequestHandlerImpl;
+import fu.berlin.csw.dbpedia.client.actionbar.application.SignOutRequestHandlerImpl;
 import edu.stanford.bmir.protege.web.client.actionbar.project.*;
 import edu.stanford.bmir.protege.web.client.events.UserLoggedInEvent;
 import edu.stanford.bmir.protege.web.client.events.UserLoggedInHandler;
