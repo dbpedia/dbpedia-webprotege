@@ -6,6 +6,7 @@ import edu.stanford.bmir.protege.web.server.app.GetClientApplicationPropertiesAc
 import edu.stanford.bmir.protege.web.server.auth.ChangePasswordActionHandler;
 import edu.stanford.bmir.protege.web.server.auth.GetChapSessionActionHandler;
 import edu.stanford.bmir.protege.web.server.auth.PerformLoginActionHandler;
+import fu.berlin.csw.dbpedia.server.auth.GetDBpediaChapSessionActionHandler;
 import edu.stanford.bmir.protege.web.server.change.GetProjectChangesActionHandler;
 import edu.stanford.bmir.protege.web.server.change.GetWatchedEntityChangesActionHandler;
 import edu.stanford.bmir.protege.web.server.change.RevertRevisionActionHandler;
@@ -152,6 +153,7 @@ public class ActionHandlersModule extends AbstractModule {
 
         multibinder.addBinding().to(LogOutUserActionHandler.class);
         multibinder.addBinding().to(GetChapSessionActionHandler.class);
+        multibinder.addBinding().to(GetDBpediaChapSessionActionHandler.class);
 
         multibinder.addBinding().to(PerformLoginActionHandler.class);
         multibinder.addBinding().to(ChangePasswordActionHandler.class);
