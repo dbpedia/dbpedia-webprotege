@@ -112,6 +112,8 @@ public interface WebProtegeClientBundle extends ClientBundle {
     @Source("edit.png")
     ImageResource editIcon();
 
+    @Source("dbpedia.png")
+    ImageResource dbpediaLogo();
 
     @Source("WebProtege.css")
     WebProtegeCss style();
