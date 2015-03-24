@@ -13,6 +13,7 @@ import edu.stanford.bmir.protege.web.client.ui.library.msgbox.MessageBox;
 import edu.stanford.bmir.protege.web.client.ui.library.msgbox.OKCancelHandler;
 import edu.stanford.bmir.protege.web.client.ui.verification.NullHumanVerificationWidget;
 import edu.stanford.bmir.protege.web.shared.auth.*;
+import fu.berlin.csw.dbpedia.shared.auth.AuthenticatedActionExecutor;
 import edu.stanford.bmir.protege.web.shared.user.*;
 
 import javax.inject.Provider;
