@@ -17,6 +17,7 @@ import edu.stanford.bmir.protege.web.client.ui.frame.ClassFrameEditorPresenter;
 import edu.stanford.bmir.protege.web.client.ui.frame.LabelledFrame;
 import edu.stanford.bmir.protege.web.client.ui.frame.PropertyValueListEditor;
 import edu.stanford.bmir.protege.web.client.ui.library.common.EventStrategy;
+import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
 import edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle;
 import edu.stanford.bmir.protege.web.shared.DirtyChangedEvent;
 import edu.stanford.bmir.protege.web.shared.DirtyChangedHandler;
@@ -230,6 +231,8 @@ public class ClassFrameEditor extends SimplePanel implements ClassFrameEditorPre
         String[] iriSplit = iriField.getValue().split("/");
         EventBusManager.getManager().postEvent(new DBpediaRenameEvent(iriField.getValue(),
                                                "http://dbpedia.org/ontology/" + evt.getValue(), projectId));
+
+        UIUtil.showLoadProgessBar("Renaming Class.", "Loading...");
 
         iriField.setValue(this.getValue().get().getFrame().getSubject().getIRI().toString());
 
