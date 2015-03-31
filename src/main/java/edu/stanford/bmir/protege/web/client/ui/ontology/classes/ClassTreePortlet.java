@@ -25,10 +25,7 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 import com.gwtext.client.widgets.menu.event.CheckItemListener;
 import com.gwtext.client.widgets.menu.event.CheckItemListenerAdapter;
 import com.gwtext.client.widgets.tree.*;
-import com.gwtext.client.widgets.tree.event.DefaultSelectionModelListenerAdapter;
-import com.gwtext.client.widgets.tree.event.MultiSelectionModelListener;
-import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
-import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
+import com.gwtext.client.widgets.tree.event.*;
 import edu.stanford.bmir.protege.web.client.Application;
 import edu.stanford.bmir.protege.web.client.csv.CSVImportDialogController;
 import edu.stanford.bmir.protege.web.client.dispatch.DispatchServiceCallback;
@@ -64,12 +61,14 @@ import edu.stanford.bmir.protege.web.shared.hierarchy.ClassHierarchyParentRemove
 import edu.stanford.bmir.protege.web.shared.renderer.GetEntityDataAction;
 import edu.stanford.bmir.protege.web.shared.renderer.GetEntityDataResult;
 import edu.stanford.bmir.protege.web.shared.watches.*;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
+import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEventHandler;
 import org.semanticweb.owlapi.model.EntityType;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLEntity;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 import static edu.stanford.bmir.protege.web.resources.WebProtegeClientBundle.BUNDLE;
 
@@ -93,6 +92,8 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
     private final String linkPattern = "{0}?ontology={1}&tab={2}&id={3}";
 
     private TreePanel treePanel;
+
+    private String newClassIRI = null;
 
     protected ToolbarButton createButton;
 
@@ -130,6 +131,8 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
     * Configuration constants and defaults
     */
     private static Set<EntityData> nodesWithNotesOpen = new HashSet<EntityData>();
+
+    static final Logger logger = Logger.getLogger(ClassTreePortlet.class.getName());
 
     public ClassTreePortlet(final Project project) {
         this(project, true, true, true, true, null);
@@ -222,6 +225,15 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
             }
         });
 
+        addProjectEventHandler(DBpediaRenameEvent.TYPE, new DBpediaRenameEventHandler() {
+                @Override
+                public void rename_class(DBpediaRenameEvent event) {
+                    if (isEventForThisProject(event)) {
+                        logger.info("[ClassTreePortlet] Handle rename event");
+                        newClassIRI = event.getNewClassIRI();
+                    }
+                }
+        });
     }
 
     private void handleParentAddedEvent(final ClassHierarchyParentAddedEvent event) {
@@ -238,6 +250,13 @@ public class ClassTreePortlet extends AbstractOWLEntityPortlet {
                     SubclassEntityData subClassData = new SubclassEntityData(event.getChild().toStringID(), result.getEntityDataMap().get(event.getChild()).getBrowserText(), Collections.<EntityData>emptyList(), 0);
                     subClassData.setValueType(ValueType.Cls);
                     onSubclassAdded((EntityData) tn.getUserObject(), Arrays.<EntityData>asList(subClassData), false);
+                    if(newClassIRI != null && newClassIRI.equals(event.getChild().toStringID())) {
+                        TreeSorter sorter = new TreeSorter(treePanel, new TreeSorterConfig());
+                        sorter.sort(treePanel.getRootNode());
+                        TreeNode tc = findTreeNode(event.getChild().toStringID());
+                        tc.select();
+                        UIUtil.hideLoadProgessBar();
+                    }
                 }
             });
 
