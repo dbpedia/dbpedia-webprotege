@@ -37,7 +37,7 @@
 	<inherits name="org.semanticweb.owlapi.gwt.owlapi" />
 
 	<inherits name='com.gwtext.GwtExt' />
-    <inherits name="fu.berlin.csw.DBpedia" />
+    <inherits name="fu.berlin.csw.dbpedia.DBpedia" />
 
 	<!--<generate-with class="edu.stanford.bmir.protege.web.server.generated.UIFactoryGenerator"> -->
 	<!--<when-type-assignable class="edu.stanford.bmir.protege.web.client.ui.generated.PluginFactory"/> -->

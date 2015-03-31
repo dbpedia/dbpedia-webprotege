@@ -6,5 +6,6 @@
     <inherits name="com.google.gwt.resources.Resources"/>
     <inherits name="edu.stanford.bmir.protege.web.WebProtege" />
 
-    <source path="" />
+    <source path="client" />
+    <source path="shared" />
 </module>
