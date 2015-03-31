@@ -17,7 +17,6 @@ import edu.stanford.bmir.protege.web.shared.user.LogOutUserAction;
 import edu.stanford.bmir.protege.web.shared.user.LogOutUserResult;
 import edu.stanford.bmir.protege.web.shared.user.UserDetails;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
-import fu.berlin.csw.dbpedia.client.ui.login.MediaWikiLogin;
 
 import java.util.*;
 
