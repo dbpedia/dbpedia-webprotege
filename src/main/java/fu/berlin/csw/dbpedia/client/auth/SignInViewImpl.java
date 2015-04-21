@@ -29,25 +29,11 @@ public class SignInViewImpl extends Composite implements SignInView {
         initWidget(ourUiBinder.createAndBindUi(this));
     }
 
-    private ForgotPasswordHandler forgotPasswordHandler = new ForgotPasswordHandler() {
-        @Override
-        public void handleForgotPassword() {
-        }
-    };
-
     @UiField
     protected TextBox userNameField;
 
     @UiField
     protected PasswordTextBox passwordField;
-
-    @UiField
-    protected HasClickHandlers forgotPasswordButton;
-
-    @UiHandler("forgotPasswordButton")
-    protected void handleForgotPassword(ClickEvent event) {
-        forgotPasswordHandler.handleForgotPassword();
-    }
 
     @Override
     public void clear() {
@@ -77,6 +63,6 @@ public class SignInViewImpl extends Composite implements SignInView {
 
     @Override
     public void setForgotPasswordHandler(ForgotPasswordHandler handler) {
-        this.forgotPasswordHandler = checkNotNull(handler);
+//        this.forgotPasswordHandler = checkNotNull(handler);
     }
 }

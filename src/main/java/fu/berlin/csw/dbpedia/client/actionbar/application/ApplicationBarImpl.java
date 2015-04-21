@@ -163,14 +163,14 @@ public class ApplicationBarImpl extends Composite implements ApplicationActionBa
         popupMenu.addItem("Change password", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                MessageBox.showMessage("Please use <a href='http://mappings.dbpedia.org'>http://mappings.dbpedia.org</a> to change password.");
+                MessageBox.showMessage("Please use <a href='http://mappings.dbpedia.org'>http://mappings.dbpedia.org</a> to change password and contact admin.");
             }
         });
 
         popupMenu.addItem("Change email address", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                MessageBox.showMessage("Please use <a href='http://mappings.dbpedia.org'>http://mappings.dbpedia.org</a> to change password.");
+                MessageBox.showMessage("Please use <a href='http://mappings.dbpedia.org'>http://mappings.dbpedia.org</a> to change email address and contact admin.");
             }
         });
         popupMenu.showRelativeTo(userNameItem);

@@ -21,9 +21,5 @@
             <g:Label text="Password" addStyleNames="{wp.style.dlgLabel}"/>
             <g:PasswordTextBox visibleLength="60" ui:field="passwordField"/>
         </div>
-        <div class="{wp.style.formGroup}">
-            <g:Anchor text="Forgot password" ui:field="forgotPasswordButton"
-                      addStyleNames="{style.forgotPasswordButton}"/>
-        </div>
     </g:HTMLPanel>
 </ui:UiBinder>
