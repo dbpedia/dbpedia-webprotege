@@ -48,6 +48,9 @@ import edu.stanford.bmir.protege.web.server.watches.AddWatchActionHandler;
 import edu.stanford.bmir.protege.web.server.watches.RemoveWatchActionHandler;
 import edu.stanford.bmir.protege.web.shared.project.SetUIConfigurationActionHandler;
 import edu.stanford.bmir.protege.web.server.revision.*;
+import fu.berlin.csw.dbpedia.server.commit.CommitActionHandler;
+import fu.berlin.csw.dbpedia.shared.commit.CommitAction;
+
 /**
  * Matthew Horridge
  * Stanford Center for Biomedical Informatics Research
@@ -171,5 +174,6 @@ public class ActionHandlersModule extends AbstractModule {
         multibinder.addBinding().to(GetWatchedEntityChangesActionHandler.class);
 
         multibinder.addBinding().to(RevertRevisionActionHandler.class);
+        multibinder.addBinding().to(CommitActionHandler.class);
     }
 }
