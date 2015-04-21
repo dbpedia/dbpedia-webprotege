@@ -80,7 +80,7 @@ public class SignInPresenter {
                 });
     }
 
-    private void handleAuthenticationResponse(final UserId userId, final String password, AuthenticationResponse response, WebProtegeDialogCloser closer) {
+    private void handleAuthenticationResponse(final UserId userId, final String password, AuthenticationResponse response, final WebProtegeDialogCloser closer) {
 
         final Callback<MediaWikiData, String> wiki_call = new Callback<MediaWikiData, String>() {
             @Override
@@ -92,7 +92,7 @@ public class SignInPresenter {
             public void onSuccess(MediaWikiData result) {
                 SignupInfo data = getSignUpInfo(userId.getUserName(), password);
                 // register Account
-                signUp(data);
+                signUp(data, closer);
                 logger.info("[DBpediaSignInPresenter] Token: " + result.edit_token);
                 logger.info("[DBpediaSignInPresenter] SessionID: " + result.session_id);
                 logger.info("[DBpediaSignInPresenter] Cookie Prefix: " + result.cookie_prefix);
@@ -168,8 +168,7 @@ public class SignInPresenter {
         return new SignupInfo(emailAddress, user_name, password, new NullHumanVerificationWidget().getVerificationServiceProvider());
     }
 
-//    private void signUp(final SignupInfo data, final WebProtegeDialogCloser dialogCloser) {
-    private void signUp(final SignupInfo data) {
+    private void signUp(final SignupInfo data, final WebProtegeDialogCloser dialogCloser) {
         CreateUserAccountExecutor executor = new CreateUserAccountExecutor(
                 DispatchServiceManager.get(),
                 new PasswordDigestAlgorithm(new Md5DigestAlgorithmProvider()),
@@ -183,7 +182,7 @@ public class SignInPresenter {
                 MessageBox.showMessage("Registration complete",
                         "You have successfully registered.  " +
                                 "Please log in using the button/link on the top right.");
-//                dialogCloser.hide();
+                dialogCloser.hide();
             }
 
             @Override
