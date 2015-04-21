@@ -1,8 +1,12 @@
 package fu.berlin.csw.dbpedia.client.ui.portlet;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Logger;
 
+
+import com.google.common.base.Optional;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -16,14 +20,20 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.stanford.bmir.protege.web.client.Application;
+import edu.stanford.bmir.protege.web.client.dispatch.DispatchServiceCallback;
+import edu.stanford.bmir.protege.web.client.dispatch.DispatchServiceManager;
+import edu.stanford.bmir.protege.web.client.ui.library.msgbox.MessageBox;
 import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
+import edu.stanford.bmir.protege.web.shared.entity.OWLEntityData;
 import edu.stanford.bmir.protege.web.shared.event.HasEventHandlerManagement;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedEvent;
 import edu.stanford.bmir.protege.web.shared.event.ProjectChangedHandler;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.revision.RevisionNumber;
-import fu.berlin.csw.dbpedia.client.rpc.DBPediaService;
-import fu.berlin.csw.dbpedia.client.rpc.DBPediaServiceAsync;
+import edu.stanford.bmir.protege.web.shared.user.*;
+import fu.berlin.csw.dbpedia.shared.commit.CommitExecutor;
+import fu.berlin.csw.dbpedia.shared.commit.CommitResult;
 import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
 import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEventHandler;
 
@@ -38,10 +48,9 @@ public class DBPediaBasePanel extends Composite {
 
 	ProjectId projectId;
 
-	AsyncCallback<Message> callbackMessage;
-	AsyncCallback<Void> callbackVoid;
-	
 	private RevisionNumber lastRevisionNumber = RevisionNumber.getRevisionNumber(0);
+
+	static Logger logger = Logger.getLogger(DBPediaBasePanel.class.getName());
 
 	@UiTemplate("DBPediaBasePanel.ui.xml")
 	interface MyUiBinder extends UiBinder<Widget, DBPediaBasePanel> {
@@ -49,51 +58,19 @@ public class DBPediaBasePanel extends Composite {
 
 	private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-	// @UiField
-	// ListBox listBox;
-
     @UiField
     protected FlexTable changeEventTable;
 	
 	@UiField
 	Button commit;
 
-	private static DBPediaServiceAsync proxy;
-	String message;
+	private HashSet<OWLEntityData> entities;
 
 	public DBPediaBasePanel(final ProjectId projectId,
 			HasEventHandlerManagement eventHandlerMan) {
 
 		this.projectId = projectId;
-
-		proxy = (DBPediaServiceAsync) GWT.create(DBPediaService.class);
-		callbackMessage = new AsyncCallback<Message>() {
-			public void onFailure(Throwable caught) {
-                UIUtil.hideLoadProgessBar();
-				Window.alert("Commit Error!");
-			}
-
-			public void onSuccess(Message result) {
-				message = result.getMessage();
-				Iterator<Widget> it = changeEventTable.iterator();
-				
-				while (it.hasNext()){
-					CommitChangesEventPanel wg = (CommitChangesEventPanel) it.next();
-				}
-                UIUtil.hideLoadProgessBar();
-				Window.alert(message);
-			}
-		};
-		callbackVoid = new AsyncCallback<Void>() {
-			public void onFailure(Throwable caught) {
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-			}
-		};
-
-		proxy.init(projectId, callbackVoid);
+		entities = new HashSet<OWLEntityData>();
 
 		eventHandlerMan.addProjectEventHandler(ProjectChangedEvent.TYPE,
 				new ProjectChangedHandler() {
@@ -114,9 +91,16 @@ public class DBPediaBasePanel extends Composite {
 					        
 					        insertWidgetIntoFeed(changePanel);
 							
-							
-							proxy.postChangeEvent(projectId, event,
-									callbackVoid);
+							for (OWLEntityData ent : event.getSubjects()) {
+								if(entities.contains(ent)) {
+									// Replace old entity with new one
+									entities.remove(ent);
+									entities.add(ent);
+								} else {
+									entities.add(ent);
+								}
+
+							}
 						}
 					}
 				});
@@ -126,28 +110,55 @@ public class DBPediaBasePanel extends Composite {
             @Override
             public void rename_class(DBpediaRenameEvent event) {
                 logger.info("[DBPediaBasePanel] Handling Rename Event -  " + event);
-                proxy.postRenameEvent(projectId, event, callbackVoid);
             }
         });
 
 		initWidget(uiBinder.createAndBindUi(this));
 
 	}
-	
-	
-	
-	   private void insertWidgetIntoFeed(Widget widget) {
-	        changeEventTable.insertRow(0);
-	        changeEventTable.setWidget(0, 0, widget);
-	    }
-	
-	
-	
 
-	@UiHandler("commit")
+    private void insertWidgetIntoFeed(Widget widget) {
+       changeEventTable.insertRow(0);
+       changeEventTable.setWidget(0, 0, widget);
+    }
+
+    @UiHandler("commit")
 	void handleClick(ClickEvent e) {
-        UIUtil.showLoadProgessBar("Please wait", "Commit Changes.");
-		proxy.getMessage(projectId, callbackMessage);
-        changeEventTable.clear();
-	}
+            UIUtil.showLoadProgessBar("Please wait", "Commit Changes.");
+			CommitExecutor cex = new CommitExecutor(DispatchServiceManager.get());
+            Application app = Application.get();
+            UserId user = app.getUserId();
+
+			Optional<String> session_id = app.getCurrentUserProperty(user.getUserName() + "_session_cookie");
+            Optional<String> token = app.getCurrentUserProperty(user.getUserName() + "_token");
+			Optional<String> session_prefix = app.getCurrentUserProperty(user.getUserName() + "_session_prefix");
+			if(!session_id.isPresent() || !session_prefix.isPresent() || !token.isPresent()) {
+				MessageBox.showMessage("Please logout and login again.");
+				return;
+			}
+
+			logger.info("[DBPediaBasePanel] Token: " + token);
+            logger.info("[DBPediaBasePanel] Session Id: " + session_id);
+            logger.info("[DBPediaBasePanel] Session Prefix: " + session_prefix);
+
+			cex.execute(app.getActiveProject().get(), token.get(), session_prefix.get(), session_id.get(), entities, new DispatchServiceCallback<CommitResult>() {
+				@Override
+				public void handleSuccess(CommitResult result) {
+					MessageBox.showMessage("Commit success.",
+							result.getMessage());
+					UIUtil.hideLoadProgessBar();
+					entities.clear();
+				}
+
+				@Override
+				public void handleExecutionException(Throwable cause) {
+						MessageBox.showAlert("Commit failed!",
+								"Something goes wrong :(.");
+					UIUtil.hideLoadProgessBar();
+					cause.printStackTrace();
+				}
+			});
+
+		changeEventTable.clear();
+    }
 }
