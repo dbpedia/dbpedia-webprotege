@@ -17,8 +17,8 @@ import fu.berlin.csw.dbpedia.shared.event.DBpediaRenameEvent;
 
 @RemoteServiceRelativePath("dbpedia")
 public interface DBPediaService extends RemoteService {
-	Message getMessage(
-			ProjectId input);
+	Message commitChanges(
+			ProjectId input, String token, String cookie_prefix, String session_id);
 
 	void postChangeEvent(ProjectId input, ProjectChangedEvent event);
     void postRenameEvent(ProjectId input, DBpediaRenameEvent event);
