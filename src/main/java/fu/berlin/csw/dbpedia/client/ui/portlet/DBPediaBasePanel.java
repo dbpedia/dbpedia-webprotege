@@ -124,7 +124,6 @@ public class DBPediaBasePanel extends Composite {
 
     @UiHandler("commit")
 	void handleClick(ClickEvent e) {
-            UIUtil.showLoadProgessBar("Please wait", "Commit Changes.");
 			CommitExecutor cex = new CommitExecutor(DispatchServiceManager.get());
             Application app = Application.get();
             UserId user = app.getUserId();
@@ -133,15 +132,22 @@ public class DBPediaBasePanel extends Composite {
             Optional<String> token = app.getCurrentUserProperty(user.getUserName() + "_token");
 			Optional<String> session_prefix = app.getCurrentUserProperty(user.getUserName() + "_session_prefix");
 			if(!session_id.isPresent() || !session_prefix.isPresent() || !token.isPresent()) {
-				MessageBox.showMessage("Please logout and login again.");
+				MessageBox.showMessage("Session expired", "Please logout and login again.");
 				return;
 			}
+
+            UIUtil.showLoadProgessBar("Please wait", "Commit Changes.");
 
 			logger.info("[DBPediaBasePanel] Token: " + token);
             logger.info("[DBPediaBasePanel] Session Id: " + session_id);
             logger.info("[DBPediaBasePanel] Session Prefix: " + session_prefix);
 
-			cex.execute(app.getActiveProject().get(), token.get(), session_prefix.get(), session_id.get(), entities, new DispatchServiceCallback<CommitResult>() {
+			cex.execute(app.getActiveProject().get(),
+						token.get(),
+						session_prefix.get(),
+						session_id.get(),
+						entities,
+						new DispatchServiceCallback<CommitResult>() {
 				@Override
 				public void handleSuccess(CommitResult result) {
 					MessageBox.showMessage("Commit success.",
