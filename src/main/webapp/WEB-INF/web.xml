@@ -56,11 +56,6 @@
 		<servlet-class>edu.stanford.bmir.protege.web.server.filesubmission.FileUploadServlet</servlet-class>
 	</servlet>
 
-	<servlet>
-		<servlet-name>DBPediaServiceImpl</servlet-name>
-		<servlet-class>fu.berlin.csw.dbpedia.server.DBPediaServiceImpl</servlet-class>
-	</servlet>
-
 	<!-- Servlet mappings -->
 
     <servlet-mapping>
@@ -91,11 +86,6 @@
 	<servlet-mapping>
 		<servlet-name>BioPortalAPIService</servlet-name>
 		<url-pattern>/webprotege/bioportalapi</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>DBPediaServiceImpl</servlet-name>
-		<url-pattern>/webprotege/dbpedia</url-pattern>
 	</servlet-mapping>
 
     <servlet>
