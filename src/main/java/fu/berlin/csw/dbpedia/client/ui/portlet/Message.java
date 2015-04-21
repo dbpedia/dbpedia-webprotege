@@ -10,8 +10,8 @@ import java.io.Serializable;
  */
 
 public class Message implements Serializable {
- 
-   private static final long serialVersionUID = 1L;
+
+   private static final long serialVersionUID = -2036532075794828641L;
    private String message;
    public Message(){};
 
