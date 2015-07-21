@@ -23,14 +23,13 @@ import edu.stanford.bmir.protege.web.client.ui.ontology.properties.PropertiesTab
 import edu.stanford.bmir.protege.web.client.ui.ontology.properties.PropertiesTreePortlet;
 import edu.stanford.bmir.protege.web.client.ui.ontology.revisions.RevisionsPortlet;
 import edu.stanford.bmir.protege.web.client.ui.ontology.search.BioPortalSearchPortlet;
-import edu.stanford.bmir.protege.web.client.ui.ontology.search.OtherTerminologiesTab;
 import edu.stanford.bmir.protege.web.client.ui.portlet.EntityPortlet;
-import edu.stanford.bmir.protege.web.client.ui.portlet.html.HtmlMessagePortlet;
 import edu.stanford.bmir.protege.web.client.ui.portlet.propertyForm.PropertyFieldPortlet;
 import edu.stanford.bmir.protege.web.client.ui.projectfeed.ProjectFeedPortlet;
 import edu.stanford.bmir.protege.web.client.ui.tab.AbstractTab;
 import edu.stanford.bmir.protege.web.client.ui.tab.UserDefinedTab;
 import edu.stanford.bmir.protege.web.client.usage.UsagePortlet;
+import edu.stanford.bmir.protege.web.shared.selection.SelectionModel;
 
 import java.util.*;
 
@@ -63,21 +62,18 @@ public class UIFactory {
      * Tab factory
      */
 
-    public static AbstractTab createTab(Project project, String tabJavaClassName) {
+    public static AbstractTab createTab(SelectionModel selectionModel, Project project, String tabJavaClassName) {
         if (tabJavaClassName.equals(ClassesTab.class.getName())) {
-            return new ClassesTab(project);
+            return new ClassesTab(selectionModel, project);
         }
         else if (tabJavaClassName.equals(PropertiesTab.class.getName())) {
-            return new PropertiesTab(project);
+            return new PropertiesTab(selectionModel, project);
         }
         else if (tabJavaClassName.equals(IndividualsTab.class.getName())) {
-            return new IndividualsTab(project);
-        }
-        else if (tabJavaClassName.equals(OtherTerminologiesTab.class.getName())) {
-            return new OtherTerminologiesTab(project);
+            return new IndividualsTab(selectionModel, project);
         }
         else if (tabJavaClassName.equals(UserDefinedTab.class.getName())) {
-            return new UserDefinedTab(project);
+            return new UserDefinedTab(selectionModel, project);
         }
         return null;
     }
@@ -86,100 +82,88 @@ public class UIFactory {
      * Portlet factory
      */
 
-    public static EntityPortlet createPortlet(Project project, String portletJavaClassName) {
+    public static EntityPortlet createPortlet(SelectionModel selectionModel, Project project, String portletJavaClassName) {
         try {
             String replacementName = backwardsCompatMap.get(portletJavaClassName);
             if(replacementName != null) {
                 portletJavaClassName = replacementName;
             }
-            if (portletJavaClassName.equals(AllPropertiesPortlet.class.getName())) {
-                return new AllPropertiesPortlet(project);
-            }
             else if (portletJavaClassName.equals(ClassTreePortlet.class.getName())) {
-                return new ClassTreePortlet(project);
+                return new ClassTreePortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(ImportsTreePortlet.class.getName())) {
-                return new ImportsTreePortlet(project);
+                return new ImportsTreePortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(IndividualsListPortlet.class.getName())) {
-                return new IndividualsListPortlet(project);
+                return new IndividualsListPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(MetricsPortlet.class.getName())) {
-                return new MetricsPortlet(project);
+                return new MetricsPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(PropertiesTreePortlet.class.getName())) {
-                return new PropertiesTreePortlet(project);
+                return new PropertiesTreePortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(PropertyFieldPortlet.class.getName())) {
-                return new PropertyFieldPortlet(project);
+                return new PropertyFieldPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(BioPortalSearchPortlet.class.getName())) {
-                return new BioPortalSearchPortlet(project);
+                return new BioPortalSearchPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(ChangeSummaryPortlet.class.getName())) {
-                return new ChangeSummaryPortlet(project);
+                return new ChangeSummaryPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(WatchedEntitiesPortlet.class.getName())) {
-                return new WatchedEntitiesPortlet(project);
-            }
-            else if (portletJavaClassName.equals(HtmlMessagePortlet.class.getName())) {
-                return new HtmlMessagePortlet(project);
-            }
-            else if (portletJavaClassName.equals(SuperclassesPortlet.class.getName())) {
-                return new SuperclassesPortlet(project);
+                return new WatchedEntitiesPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(ChangesPortlet.class.getName())) {
-                return new ChangesPortlet(project);
+                return new ChangesPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(WatchedEntitiesPortlet.class.getName())) {
-                return new WatchedEntitiesPortlet(project);
-            }
-            else if (portletJavaClassName.equals(PropertiesViewPortlet.class.getName())) {
-                return new PropertiesViewPortlet(project);
+                return new WatchedEntitiesPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(OBOTermRelationshipPortlet.class.getName())) {
-                return new OBOTermRelationshipPortlet(project);
+                return new OBOTermRelationshipPortlet(project, selectionModel);
             }
             else if (portletJavaClassName.equals(OBOTermDefinitionPortlet.class.getName())) {
-                return new OBOTermDefinitionPortlet(project);
+                return new OBOTermDefinitionPortlet(project, selectionModel);
             }
             else if (portletJavaClassName.equals(OBOTermIdEditorPortlet.class.getName())) {
-                return new OBOTermIdEditorPortlet(project);
+                return new OBOTermIdEditorPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(OBOTermSynonymsPortlet.class.getName())) {
-                return new OBOTermSynonymsPortlet(project);
+                return new OBOTermSynonymsPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(OBOTermCrossProductPortlet.class.getName())) {
-                return new OBOTermCrossProductPortlet(project);
+                return new OBOTermCrossProductPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(OBOTermXRefsEditorPortlet.class.getName())) {
-                return new OBOTermXRefsEditorPortlet(project);
+                return new OBOTermXRefsEditorPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(RevisionsPortlet.class.getName())) {
-                return new RevisionsPortlet(project);
+                return new RevisionsPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(OntologyIdPortlet.class.getName())) {
-                return new OntologyIdPortlet(project);
+                return new OntologyIdPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(OntologyAnnotationsPortlet.class.getName())) {
-                return new OntologyAnnotationsPortlet(project);
+                return new OntologyAnnotationsPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(ProjectFeedPortlet.class.getName())) {
-                return new ProjectFeedPortlet(project);
+                return new ProjectFeedPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(DiscussionThreadPortlet.class.getName())) {
-                return new DiscussionThreadPortlet(project);
+                return new DiscussionThreadPortlet(project, selectionModel);
             }
             else if (portletJavaClassName.equals(EditorPortlet.class.getName())) {
-                return new EditorPortlet(project);
+                return new EditorPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.equals(UsagePortlet.class.getName())) {
-                return new UsagePortlet(project);
+                return new UsagePortlet(selectionModel, project);
             } else if (portletJavaClassName.equals(OWLEntityDescriptionBrowserPortlet.class.getName())) {
-                return new OWLEntityDescriptionBrowserPortlet(project);
+                return new OWLEntityDescriptionBrowserPortlet(selectionModel, project);
             }
             else if (portletJavaClassName.endsWith(OWLEntityDescriptionEditorPortlet.class.getName())) {
-                return new OWLEntityDescriptionEditorPortlet(project);
+                return new OWLEntityDescriptionEditorPortlet(selectionModel, project);
             }
             else {
                 GWT.log("Portlet not found: " + portletJavaClassName);
@@ -214,11 +198,10 @@ public class UIFactory {
                 OntologyAnnotationsPortlet.class.getName(), EditorPortlet.class.getName(),
                 DiscussionThreadPortlet.class.getName(), ChangeSummaryPortlet.class.getName(),
                 ProjectFeedPortlet.class.getName(),
-                AllPropertiesPortlet.class.getName(), PropertiesViewPortlet.class.getName(),
                 ClassTreePortlet.class.getName(), ImportsTreePortlet.class.getName(),
                 IndividualsListPortlet.class.getName(), MetricsPortlet.class.getName(),
                 PropertiesTreePortlet.class.getName(),
-                BioPortalSearchPortlet.class.getName(), SuperclassesPortlet.class.getName(),
+                BioPortalSearchPortlet.class.getName(),
                 ChangesPortlet.class.getName(), WatchedEntitiesPortlet.class.getName(),
                 OBOTermCrossProductPortlet.class.getName(),
                 OBOTermRelationshipPortlet.class.getName(), OBOTermSynonymsPortlet.class.getName(),

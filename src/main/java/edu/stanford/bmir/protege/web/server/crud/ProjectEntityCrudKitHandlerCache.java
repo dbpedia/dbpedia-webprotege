@@ -2,12 +2,15 @@ package edu.stanford.bmir.protege.web.server.crud;
 
 import edu.stanford.bmir.protege.web.server.crud.persistence.ProjectEntityCrudKitSettings;
 import edu.stanford.bmir.protege.web.server.crud.persistence.ProjectEntityCrudKitSettingsRepository;
-import edu.stanford.bmir.protege.web.server.crud.persistence.ProjectEntityCrudKitSettingsRepositoryManager;
 import edu.stanford.bmir.protege.web.shared.crud.EntityCrudKitPrefixSettings;
 import edu.stanford.bmir.protege.web.shared.crud.EntityCrudKitSettings;
 import edu.stanford.bmir.protege.web.shared.crud.EntityCrudKitSuffixSettings;
 import edu.stanford.bmir.protege.web.shared.crud.uuid.UUIDSuffixSettings;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
+
+import javax.inject.Inject;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Author: Matthew Horridge<br>
@@ -17,12 +20,16 @@ import edu.stanford.bmir.protege.web.shared.project.ProjectId;
  */
 public class ProjectEntityCrudKitHandlerCache {
 
-    private ProjectId projectId;
+    private final ProjectId projectId;
+
+    private final ProjectEntityCrudKitSettingsRepository repository;
 
     private EntityCrudKitHandler<?, ?> cachedHandler;
 
-    public ProjectEntityCrudKitHandlerCache(ProjectId projectId) {
-        this.projectId = projectId;
+    @Inject
+    public ProjectEntityCrudKitHandlerCache(ProjectEntityCrudKitSettingsRepository repository, ProjectId projectId) {
+        this.repository = checkNotNull(repository);
+        this.projectId = checkNotNull(projectId);
     }
 
     /**
@@ -38,7 +45,6 @@ public class ProjectEntityCrudKitHandlerCache {
     }
 
     private EntityCrudKitSettings<?> getCurrentSettings() {
-        ProjectEntityCrudKitSettingsRepository repository = ProjectEntityCrudKitSettingsRepositoryManager.getRepository();
         ProjectEntityCrudKitSettings projectSettings = repository.findOne(projectId);
         if (projectSettings == null) {
             projectSettings = new ProjectEntityCrudKitSettings(projectId, getDefaultSettings());
