@@ -167,7 +167,7 @@ public class UIFactory {
                 return new OWLEntityDescriptionEditorPortlet(selectionModel, project);
             }
             else if(portletJavaClassName.endsWith(DBPediaPortlet.class.getName())) {
-                return new DBPediaPortlet(project);
+                return new DBPediaPortlet(selectionModel, project);
             }
             else {
                 GWT.log("Portlet not found: " + portletJavaClassName);
