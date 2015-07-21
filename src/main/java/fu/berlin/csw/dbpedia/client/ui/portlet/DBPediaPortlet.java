@@ -6,6 +6,7 @@ import java.util.Collections;
 import edu.stanford.bmir.protege.web.client.project.Project;
 import edu.stanford.bmir.protege.web.client.rpc.data.EntityData;
 import edu.stanford.bmir.protege.web.client.ui.portlet.AbstractOWLEntityPortlet;
+import edu.stanford.bmir.protege.web.shared.selection.SelectionModel;
 
 /**
  * Author: Matthew Horridge<br>
@@ -18,12 +19,12 @@ public class DBPediaPortlet extends AbstractOWLEntityPortlet {
 
     private DBPediaBasePanel basePanel;
 
-    public DBPediaPortlet(Project project) {
-        super(project);
+    public DBPediaPortlet(SelectionModel selectionModel, Project project) {
+        super(selectionModel, project);
     }
 
-    public DBPediaPortlet(Project project, boolean initialize) {
-        super(project, initialize);
+    public DBPediaPortlet(SelectionModel selectionModel, Project project, boolean initialize) {
+        super(selectionModel, project, initialize);
     }
 
     @Override
@@ -40,10 +41,10 @@ public class DBPediaPortlet extends AbstractOWLEntityPortlet {
         return false;
     }
 
-    @Override
-    public Collection<EntityData> getSelection() {
-        return Collections.emptySet();
-    }
+//    @Override
+//    public Collection<EntityData> getSelection() {
+//        return Collections.emptySet();
+//    }
 
 
 }
