@@ -41,6 +41,7 @@ import edu.stanford.bmir.protege.web.client.ui.tab.UserDefinedTab;
 import edu.stanford.bmir.protege.web.client.ui.util.UIUtil;
 import edu.stanford.bmir.protege.web.shared.event.EventBusManager;
 import edu.stanford.bmir.protege.web.shared.project.*;
+import edu.stanford.bmir.protege.web.shared.selection.SelectionModel;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
 
 import java.util.ArrayList;
@@ -69,9 +70,11 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
 
     private List<AbstractTab> tabs;
 
+    private final SelectionModel selectionModel;
 
     public ProjectDisplayImpl(ProjectId projectId) {
         this.projectId = checkNotNull(projectId);
+        this.selectionModel = SelectionModel.create();
         setTitle(getLabel());
         setTopToolbar(new Toolbar()); //TODO: make it configurable
         setEnableTabScroll(true);
@@ -148,6 +151,7 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
     }
 
     private void getProjectConfiguration() {
+        GWT.log("Getting the project configuration");
         DispatchServiceManager.get().execute(new GetUIConfigurationAction(projectId),
                 new DispatchServiceCallbackWithProgressDisplay<GetUIConfigurationResult>() {
                     @Override
@@ -180,10 +184,12 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
     }
 
 
-    protected void createOntolgyForm() {
+    private void createOntolgyForm() {
         Project project = ProjectManager.get().getProject(projectId).get();
-        List<AbstractTab> tabs = project.getLayoutManager().createTabs(project.getProjectLayoutConfiguration());
+        List<AbstractTab> tabs = project.getLayoutManager().createTabs(selectionModel, project.getProjectLayoutConfiguration());
+        GWT.log("Creating the ontology form from " + tabs.size() + " tabs");
         for (AbstractTab tab : tabs) {
+            GWT.log("Attempting to add tab " + tab.getLabel());
             addTab(tab);
             updateTabStyle(tab);
         }
@@ -205,7 +211,11 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
         }
     }
 
-    protected void addTab(AbstractTab tab) {
+    private void addTab(AbstractTab tab) {
+        GWT.log("Add Tab: " + tab.getLabel());
+        if(tabs.contains(tab)) {
+            throw new RuntimeException("Tab already present");
+        }
         tabs.add(tab);
         add(tab);
     }
@@ -254,24 +264,13 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
     }
 
     protected void onPortletAdded(final String javaClassName) {
-        GWT.runAsync(new RunAsyncCallback() {
-            @Override
-            public void onFailure(Throwable reason) {
-                GWT.log("There was a problem adding the portlet", reason);
-            }
-
-            @Override
-            public void onSuccess() {
-                EntityPortlet portlet = UIFactory.createPortlet(getProject(), javaClassName);
-                if (portlet == null) {
-                    return;
-                }
-                AbstractTab activeTab = getActiveOntologyTab();
-                activeTab.addPortlet(portlet, activeTab.getColumnCount() - 1);
-                doLayout();
-            }
-        });
-
+        AbstractTab activeTab = getActiveOntologyTab();
+        EntityPortlet portlet = UIFactory.createPortlet(activeTab.getSelectionModel(), getProject(), javaClassName);
+        if (portlet == null) {
+            return;
+        }
+        activeTab.addPortlet(portlet, activeTab.getColumnCount() - 1);
+        doLayout();
     }
 
     protected ToolbarMenuButton getAddTabButton() {
@@ -360,7 +359,7 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
     }
 
     protected void onTabAdded(String javaClassName) {
-        AbstractTab tab = getProject().getLayoutManager().addTab(javaClassName);
+        AbstractTab tab = getProject().getLayoutManager().addTab(selectionModel, javaClassName);
         if (tab == null) {
             return;
         }
@@ -515,7 +514,7 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
 
         public AbstractTab createTab() {
             final Project project = getProject();
-            UserDefinedTab userDefinedTab = new UserDefinedTab(project);
+            UserDefinedTab userDefinedTab = new UserDefinedTab(selectionModel, project);
             TabConfiguration userDefinedTabConfiguration = getUserDefinedTabConfiguration();
             project.getLayoutManager().setupTab(userDefinedTab, userDefinedTabConfiguration);
             project.getProjectLayoutConfiguration().addTab(userDefinedTabConfiguration);
@@ -567,13 +566,6 @@ public class ProjectDisplayImpl extends TabPanel implements ProjectDisplay {
             if (tabName.equals(tabNameToSelect)) {
                 activate(tab.getId());
                 doLayout();
-
-                String selection = com.google.gwt.user.client.Window.Location.getParameter("id");
-                if (selection != null) {
-                    selection = URL.decodeQueryString(selection);
-                    tab.setSelection(UIUtil.createCollection(new EntityData(selection)));
-                    break;
-                }
             }
         }
     }

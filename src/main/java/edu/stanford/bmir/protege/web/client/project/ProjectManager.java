@@ -4,12 +4,12 @@ import com.google.common.base.Optional;
 import edu.stanford.bmir.protege.web.client.dispatch.DispatchServiceCallback;
 import edu.stanford.bmir.protege.web.client.dispatch.DispatchServiceCallbackInvoker;
 import edu.stanford.bmir.protege.web.client.dispatch.DispatchServiceManager;
-import edu.stanford.bmir.protege.web.client.dispatch.ProgressDisplay;
-import edu.stanford.bmir.protege.web.client.dispatch.actions.LoadProjectAction;
-import edu.stanford.bmir.protege.web.client.dispatch.actions.LoadProjectResult;
+import edu.stanford.bmir.protege.web.shared.project.LoadProjectAction;
+import edu.stanford.bmir.protege.web.shared.project.LoadProjectResult;
 import edu.stanford.bmir.protege.web.shared.permissions.PermissionsSet;
 import edu.stanford.bmir.protege.web.shared.project.ProjectDetails;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
+import edu.stanford.bmir.protege.web.shared.selection.SelectionModel;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
 
 import java.util.HashMap;

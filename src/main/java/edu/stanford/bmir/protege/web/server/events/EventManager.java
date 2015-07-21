@@ -10,7 +10,11 @@ import edu.stanford.bmir.protege.web.shared.event.SerializableEvent;
 import edu.stanford.bmir.protege.web.shared.events.EventList;
 import edu.stanford.bmir.protege.web.shared.events.EventTag;
 
+import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -28,15 +32,15 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
 
     private static final int EVENT_LIST_SIZE_LIMIT = 200;
 
-    private final ReadWriteLock LOCK = new ReentrantReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private final Lock READ_LOCK = LOCK.readLock();
+    private final Lock readLock = lock.readLock();
 
-    private final Lock WRITE_LOCK = LOCK.writeLock();
+    private final Lock writeLock = lock.writeLock();
 
 
 
-    private final Queue<EventBucket> eventQueue = new LinkedList<EventBucket>();
+    private final Queue<EventBucket> eventQueue = new LinkedList<>();
 
     private final EventLifeTime eventLifeTime;
 
@@ -45,17 +49,19 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
 
     private EventTag currentTag = EventTag.getFirst();
 
-    private final Timer purgeSweepTimer;
+    private ScheduledExecutorService purgeSweepService = Executors.newSingleThreadScheduledExecutor();
 
-    private List<HandlerRegistration> registeredHandlers = new ArrayList<HandlerRegistration>();
+    private List<HandlerRegistration> registeredHandlers = new ArrayList<>();
 
 
-    private EventManager(EventLifeTime eventLifeTime) {
+    @Inject
+    public EventManager(EventLifeTime eventLifeTime) {
         this.eventLifeTime = checkNotNull(eventLifeTime);
-        purgeSweepTimer = new Timer(true);
         final long eventLifeTimeInMilliseconds = eventLifeTime.getEventLifeTimeInMilliseconds();
-        purgeSweepTimer.scheduleAtFixedRate(new PurgeExpiredEventsTask(), eventLifeTimeInMilliseconds, eventLifeTimeInMilliseconds);
-
+        purgeSweepService.scheduleAtFixedRate(new PurgeExpiredEventsTask(writeLock, eventQueue),
+                eventLifeTimeInMilliseconds,
+                eventLifeTimeInMilliseconds,
+                TimeUnit.MILLISECONDS);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,16 +69,6 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * Creates a new event manager.
-     * @param <E> The type of events that can be posted to this manager.
-     * @param eventLifeTime The life time of events.
-     * @return An fresh event manager for the specified type of events.  Not {@code null}.
-     */
-    public static <E extends SerializableEvent<?>> EventManager<E> create(EventLifeTime eventLifeTime) {
-        return new EventManager<E>(eventLifeTime);
-    }
 
     /**
      * Posts an event to this event manager.
@@ -98,15 +94,15 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
             return currentTag;
         }
         try {
-            WRITE_LOCK.lock();
+            writeLock.lock();
             currentTag = currentTag.next();
-            EventBucket e = new EventBucket(System.currentTimeMillis(), checkNotNull(events, "events must not be null"), currentTag);
+            EventBucket<E> e = new EventBucket<>(System.currentTimeMillis(), checkNotNull(events, "events must not be null"), currentTag, eventLifeTime);
             eventQueue.add(e);
         }
         finally {
-            WRITE_LOCK.unlock();
+            writeLock.unlock();
         }
-        for(E event : new LinkedHashSet<E>(events)) {
+        for(E event : new LinkedHashSet<>(events)) {
             eventBus.fireEvent(event);
         }
         return currentTag;
@@ -125,7 +121,7 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
         List<E> resultList = new ArrayList<E>();
         final EventTag curTag;
         try {
-            READ_LOCK.lock();
+            readLock.lock();
             curTag = currentTag;
             for (EventBucket bucket : eventQueue) {
                 if(bucket.getTag().isGreaterOrEqualTo(fromTag)) {
@@ -134,7 +130,7 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
             }
         }
         finally {
-            READ_LOCK.unlock();
+            readLock.unlock();
         }
         final EventTag toTag = curTag.next();
         if(resultList.isEmpty()) {
@@ -147,11 +143,11 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
 
     public EventTag getCurrentTag() {
         try {
-            READ_LOCK.lock();
+            readLock.lock();
             return currentTag;
         }
         finally {
-            READ_LOCK.unlock();
+            readLock.unlock();
         }
     }
 
@@ -171,13 +167,15 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
     /**
      * Instances of this class bind together a timestamp, event list and event list tag.
      */
-    private class EventBucket {
+    private static class EventBucket<E> {
 
         private final long timestamp;
 
         private final List<E> events;
 
         private final EventTag tag;
+
+        private final EventLifeTime eventLifeTime;
 
         /**
          * Constructs an EventBucket.
@@ -186,10 +184,11 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
          * @param tag The tag of the bucket.  Not {@code null}.
          * @throws NullPointerException if any parameters are {@code null}.
          */
-        private EventBucket(long timestamp, List<E> events, EventTag tag) {
+        private EventBucket(long timestamp, List<E> events, EventTag tag, EventLifeTime eventLifeTime) {
             this.timestamp = timestamp;
             this.events = new ArrayList<E>(checkNotNull(events));
             this.tag = checkNotNull(tag);
+            this.eventLifeTime = checkNotNull(eventLifeTime);
         }
 
         /**
@@ -236,52 +235,57 @@ public class EventManager<E extends SerializableEvent<?>> implements HasDispose,
         }
     }
 
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void purgeExpiredEvents() {
-        try {
-            WRITE_LOCK.lock();
-            while (true) {
-                if (eventQueue.isEmpty()) {
-                    break;
-                }
-                EventBucket bucket = eventQueue.peek();
-                if (bucket.isExpired()) {
-                    eventQueue.poll();
-                }
-                else {
-                    break;
-                }
-            }
+    private static class PurgeExpiredEventsTask extends TimerTask {
+
+        private final Lock writeLock;
+
+        private final Queue<EventBucket> queue;
+
+        public PurgeExpiredEventsTask(Lock writeLock, Queue<EventBucket> queue) {
+            this.writeLock = writeLock;
+            this.queue = queue;
         }
-        finally {
-            WRITE_LOCK.unlock();
-        }
-    }
-
-
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private class PurgeExpiredEventsTask extends TimerTask {
 
         @Override
         public void run() {
-            purgeExpiredEvents();
+            removeExpiredEvents();
+        }
+
+        private void removeExpiredEvents() {
+            try {
+                writeLock.lock();
+                while (true) {
+                    if (queue.isEmpty()) {
+                        break;
+                    }
+                    EventBucket bucket = queue.peek();
+                    if (bucket.isExpired()) {
+                        queue.poll();
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            finally {
+                writeLock.unlock();
+            }
         }
     }
 
     @Override
     public void dispose() {
-        purgeSweepTimer.cancel();
+        if(purgeSweepService != null) {
+            purgeSweepService.shutdown();
+            purgeSweepService = null;
+        }
         removeRegisteredHandlersFromEventBus();
     }
 
