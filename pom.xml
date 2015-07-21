@@ -451,7 +451,9 @@
                 <data.directory>${project.basedir}/data/webprotege</data.directory>
                 <application.host>localhost</application.host>
                 <dbpedia.dpw>http://160.45.114.250:8080/dpw/webprotege</dbpedia.dpw>
-                <dbpedia.wikihost>de.dbpedia.org/mappingswiki</dbpedia.wikihost>
+                <!--<dbpedia.dpw>http://localhost:8080/dpw/webprotege</dbpedia.dpw>-->
+                <!--<dbpedia.wikihost>de.dbpedia.org/mappingswiki</dbpedia.wikihost>-->
+                <dbpedia.wikihost>160.45.114.250/mediawiki</dbpedia.wikihost>
                 <!-- No admin email by default -->
                 <mediawiki.version>16</mediawiki.version>
                 <user.account.creation.enabled>false</user.account.creation.enabled>
@@ -562,7 +564,7 @@
             <mail.smtp.from.wp.personalName>DBpedia WebProtege</mail.smtp.from.wp.personalName>
             <data.directory>/var/lib/tomcat7/webapps/data/webprotege</data.directory>
             <dbpedia.dpw>http://160.45.114.250:8080/dpw/webprotege</dbpedia.dpw>
-            <dbpedia.wikihost>http://de.dbpedia.org/mappingswiki</dbpedia.wikihost>
+            <dbpedia.wikihost>de.dbpedia.org/mappingswiki</dbpedia.wikihost>
             <mediawiki.version>16</mediawiki.version>
             <user.account.creation.enabled>false</user.account.creation.enabled>
             <admin.email/>
